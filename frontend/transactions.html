@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Transactions - Crypto Save</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="top-nav">
+  <div class="logo">Crypto Save</div>
+
+  <div class="top-links">
+    <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+    <a href="wallet.html" class="nav-link" id="nav-wallet">Wallet</a>
+    <a href="transactions.html" class="nav-link" id="nav-transactions">Transactions</a>
+  </div>
+
+  <div class="user" onclick="logout()">Logout</div>
+</div>
+
+<div class="container">
+
+  <div class="left">
+    <div class="section-title">All Transactions</div>
+
+    <div class="container">
+
+  <div class="left">
+    <div class="section-title">All Transactions</div>
+
+    <!-- ✅ ADD THIS HERE -->
+    <div class="filter-bar">
+      <span>All</span>
+      <span>Deposits</span>
+      <span>Interest</span>
+    </div>
+
+    <table class="table">
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="allTransactions"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script src="transactions.js"></script>
+</body>
+</html>

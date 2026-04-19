@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Wallet - Crypto Save</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- NAVBAR (same as dashboard) -->
+    <div class="top-nav">
+        <div class="logo">Crypto Save</div>
+
+        <div class="top-links">
+            <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+            <a href="wallet.html" class="nav-link" id="nav-wallet">Wallet</a>
+            <a href="transactions.html" class="nav-link" id="nav-transactions">Transactions</a>
+        </div>
+
+        <div class="user" onclick="logout()">Logout</div>
+    </div>
+
+    <div class="container">
+
+        <div class="left">
+            <div class="wallet-card">
+                <p>Total Wallet Balance</p>
+                <div class="big" id="walletTotal">$0.00</div>
+            </div>
+
+            <div class="section-title">Your Assets</div>
+
+            <div class="wallet-summary">
+
+                <div class="summary-card">
+                    <p>Total Assets</p>
+                    <h2 id="assetCount">0</h2>
+                </div>
+
+            </div>
+            <div id="walletAssets"></div>
+        </div>
+
+    </div>
+
+    <script src="wallet.js"></script>
+</body>
+
+</html>

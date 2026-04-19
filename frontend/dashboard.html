@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Crypto Save</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- TOP NAV -->
+ <!-- TOP NAV -->
+<div class="top-nav">
+
+  <!-- HAMBURGER -->
+  <div class="hamburger" id="hamburger">
+    ☰
+  </div>
+
+  <!-- LOGO -->
+  <div class="logo">
+    <img src="/cryptosave2.png" alt="Crypto Save Logo" class="site-logo" />
+  </div>
+
+  <!-- NAV LINKS -->
+  <div class="top-links" id="navLinks">
+    <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+    <a href="wallet.html" class="nav-link" id="nav-wallet">Wallet</a>
+    <a href="transactions.html" class="nav-link" id="nav-transactions">Transactions</a>
+  </div>
+
+  <!-- USER -->
+  <div class="user" onclick="logout()" style="cursor:pointer;">
+    Logout
+  </div>
+
+</div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="left">
+
+      <!-- WALLET -->
+      <div class="wallet-card">
+        <p>Main Wallet Balance</p>
+        <div class="balance-row">
+          <div class="big" id="total">$0.00</div>
+          <span id="toggleBalance" class="eye-btn">
+            <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
+              viewBox="0 0 24 24">
+              <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
+              <circle cx="12" cy="12" r="2.5" />
+            </svg>
+
+            <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
+              viewBox="0 0 24 24" style="display:none;">
+              <path
+                d="M2 4l20 20-1.5 1.5-3.1-3.1A10.8 10.8 0 0112 19C5 19 2 12 2 12s1.8-3.6 5-5.9L.5 2.5 2 4zm10 3c2.8 0 5 2.2 5 5 0 .7-.1 1.3-.4 1.9l-6.5-6.5c.6-.2 1.2-.4 1.9-.4z" />
+            </svg>
+          </span>
+        </div>
+        <button class="deposit-btn">Deposit</button>
+      </div>
+
+      <!-- INTEREST + APY -->
+      <div class="stats">
+        <div class="stat-box">
+          <h4>Interest</h4>
+          <p>12.5%</p>
+        </div>
+
+        <div class="stat-box">
+          <h4>APY</h4>
+          <p>3.8%</p>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="section-title">Recent Transactions</div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody id="transactions">
+          <!-- JS will fill -->
+        </tbody>
+      </table>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right">
+
+      <div class="section-title">Portfolio Overview</div>
+
+      <div id="assets"></div>
+
+    </div>
+
+  </div>
+  <script src="dashboard.js"></script>
+</body>
+
+</html>

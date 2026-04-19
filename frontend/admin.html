@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h2>Admin Panel</h2>
+
+    <h3>Update Assets</h3>
+    <input id="btc" placeholder="Bitcoin" />
+    <input id="eth" placeholder="Ethereum" />
+    <input id="usdt" placeholder="USDT" />
+    <input id="sol" placeholder="Solana" />
+
+    <button onclick="updateAssets()">Update Assets</button>
+
+    <hr>
+
+    <h3>Add Transaction</h3>
+
+    <input id="date" type="date" />
+    <input id="type" placeholder="Type (Deposit, Interest)" />
+    <input id="amount" placeholder="Amount" />
+
+    <select id="status">
+        <option>Completed</option>
+        <option>Pending</option>
+    </select>
+
+    <button onclick="addTransaction()">Add Transaction</button>
+    <script src="admin.js"></script>
+</body>
+
+</html>
