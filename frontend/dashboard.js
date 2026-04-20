@@ -7,7 +7,7 @@ document.getElementById("nav-dashboard").classList.add("nav-active");
 
 async function loadPortfolio() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app");
+        const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
         const data = await res.json();
 
         const assetsDiv = document.getElementById("assets");
@@ -188,3 +188,8 @@ if (hamburger) {
     navLinks.classList.toggle("active");
   });
 }
+window.addEventListener("storage", () => {
+    location.reload();
+});
+
+setInterval(fetchPortfolio, 5000);

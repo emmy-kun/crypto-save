@@ -4,7 +4,7 @@ async function updateAssets() {
     const usdt = document.getElementById("usdt").value;
     const sol = document.getElementById("sol").value;
 
-    await fetch("https://crypto-save-production.up.railway.app/update-assets", {
+    await fetch("https://crypto-save-production.up.railway.app/admin/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -28,7 +28,7 @@ async function addTransaction() {
     const amount = document.getElementById("amount").value;
     const status = document.getElementById("status").value;
 
-    await fetch("https://crypto-save-production.up.railway.app/add-transaction", {
+    await fetch("https://crypto-save-production.up.railway.app/admin/update", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

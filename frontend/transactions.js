@@ -1,7 +1,7 @@
 document.getElementById("nav-transactions").classList.add("nav-active");
 
 async function loadTransactions() {
-    const res = await fetch("https://crypto-save-production.up.railway.app");
+    const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
     const data = await res.json();
 
     const table = document.getElementById("allTransactions");
