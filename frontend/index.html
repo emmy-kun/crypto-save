@@ -6,20 +6,35 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Login - Crypto Save</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
 <body class="login-body">
 
   <div class="login-container">
 
     <div class="login-card">
+
       <div class="login-logo">
         <img src="/cryptosave2.png" alt="Logo" />
       </div>
+
       <p class="subtitle">Secure access to your crypto dashboard</p>
 
       <input id="username" placeholder="Username" class="input-field">
       <input id="password" type="password" placeholder="Password" class="input-field">
 
-      <button onclick="login()" class="login-btn">Sign In</button>
+      <!-- 🔥 UPDATED BUTTON WITH SPINNER -->
+      <button onclick="login()" class="login-btn" id="loginBtn">
+        <span id="btnText">Sign In</span>
+        <span id="spinner" class="spinner hidden"></span>
+      </button>
+
     </div>
 
   </div>

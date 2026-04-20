@@ -6,71 +6,43 @@ body {
 }
 
 /* TOP NAV */
+/* TOP NAV */
+/* =========================
+   NAVBAR
+========================= */
 .top-nav {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 15px 20px;
   background: #1e293b;
-  position: sticky;.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-left {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  background: rgba(30, 41, 59, 0.9);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid #334155;
 }
 
-.logo {
-  font-size: 18px;
-  font-weight: bold;
-  color: #22c55e;
+.site-logo {
+  height: 38px;
 }
 
+/* LINKS */
 .top-links {
   display: flex;
   gap: 25px;
-}
 
-.top-links span {
-  color: #94a3b8;
-  cursor: pointer;
-  font-size: 14px;
-  transition: 0.2s;
-}
-
-.top-links span:hover {
-  color: white;
-}
-
-.user {
-  background: #0f172a;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-  top: 0;
-}
-
-.user:hover{
-  background: #22c55e ;
-}
-
-.top-links span {
-  margin: 0 10px;
-  color: #cbd5e1;
-  cursor: pointer;
+  /* ✅ ADDED: keeps links centered */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .nav-link {
   color: #94a3b8;
   text-decoration: none;
   font-size: 14px;
-  transition: 0.2s;
-}
-
-.nav-link:hover {
-  color: white;
 }
 
 .nav-active {
@@ -78,18 +50,111 @@ body {
   font-weight: bold;
 }
 
+/* ✅ ADDED: group logout + hamburger */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  /* ✅ ADDED: pushes them to the far right */
+  margin-left: auto;
+}
+
+/* USER BUTTON */
+.user {
+  background: #0f172a;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+}
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+
+  /* SHOW HAMBURGER */
+  .hamburger {
+    display: block;
+  }
+
+  /* HIDE LINKS */
+  .top-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background: #1e293b;
+    padding: 15px;
+    gap: 15px;
+  }
+
+  /* SHOW WHEN ACTIVE */
+  .top-links.active {
+    display: flex;
+  }
+
+  /* STACK NAV */
+  .top-nav {
+    flex-wrap: wrap;
+  }
+
+  /* LAYOUT STACK */
+  .container {
+    flex-direction: column;
+    padding: 15px;
+  }
+
+  .left, .right {
+    width: 100%;
+  }
+
+  /* BIG TEXT ADJUST */
+  .big {
+    font-size: 24px;
+  }
+
+  /* TABLE SCROLL */
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+
 /* LAYOUT */
 .container {
   display: flex;
   gap: 25px;
   padding: 30px;
-  max-width: 1200px;
+  max-width: 1400px; /* ✅ increased width */
   margin: auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .left,
+  .right {
+    width: 100%;
+  }
 }
 
 /* LEFT & RIGHT */
 .left {
-  flex: 2;
+  flex: 1.6;
 }
 
 .right {
@@ -98,7 +163,13 @@ body {
   padding: 20px;
   border-radius: 16px;
   border: 1px solid #1f2937;
+  max-width: 360px;
 }
+
+body {
+  overflow-x: hidden; /* ✅ stops side scroll completely */
+}
+
 /* WALLET */
 .wallet-card {
   background: linear-gradient(135deg, #1e293b, #020617);
@@ -155,12 +226,16 @@ body {
 }
 
 /* TABLE */
+/* TABLE */
 .table {
   width: 100%;
   border-collapse: collapse;
   background: #020617;
   border-radius: 12px;
   overflow: hidden;
+
+  /* ✅ ADDED: prevents layout breaking */
+  table-layout: fixed;
 }
 
 .table th {
@@ -173,66 +248,149 @@ body {
 .table td {
   padding: 14px 12px;
   border-top: 1px solid #1e293b;
+
+  /* ✅ ADDED: fixes text overlapping */
+  font-size: 13px;
+  word-wrap: break-word;
 }
 
+/* ✅ ADDED: keeps status badge clean */
+.table td span {
+  display: inline-block;
+}
+
+/* ✅ ADDED: mobile scroll fix */
+@media (max-width: 768px) {
+  .table {
+    display: table; /* ✅ reset */
+    width: 100%;
+    table-layout: auto; /* ✅ allow natural sizing */
+  }
+
+  .table th,
+  .table td {
+    font-size: 12px;   /* ✅ shrink slightly */
+    padding: 10px 6px; /* ✅ tighter spacing */
+  }
+
+  /* ✅ force columns to behave */
+  .table th:nth-child(1),
+  .table td:nth-child(1) {
+    width: 25%;
+  }
+
+  .table th:nth-child(2),
+  .table td:nth-child(2) {
+    width: 20%;
+  }
+
+  .table th:nth-child(3),
+  .table td:nth-child(3) {
+    width: 25%;
+  }
+
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    width: 30%;
+  }
+}
 .asset-card-clean {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background: #020617;
-  padding: 14px 16px;
+  padding: 12px 14px;
   border-radius: 12px;
   margin-bottom: 12px;
-  transition: 0.2s;
 }
 
-.asset-card-clean:hover {
-  background: #020617;
-  transform: translateY(-2px);
-}
+/* LEFT SIDE */
 .asset-left {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
+/* LOGO */
 .coin-logo {
-    width: 30px;
-    height: 30px;
+width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
+/* TEXT BLOCK */
+.asset-left div {
+  display: flex;
+  flex-direction: column;
+}
+
+.asset-left h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.asset-left small {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* RIGHT VALUE */
 .asset-right {
-    font-weight: bold;
-    color: #22c55e;
+  font-weight: bold;
+  color: #22c55e;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .asset-card-clean {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .coin-logo {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 /* LOGIN PAGE */
 
 .login-body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
   background: linear-gradient(135deg, #0f172a, #020617);
-  font-family: Arial, sans-serif;
 }
 
+/* CONTAINER */
 .login-container {
   width: 100%;
-  max-width: 400px;
   padding: 20px;
+  display: flex;
+  justify-content: center;
 }
 
+/* CARD */
 .login-card {
-  background: rgba(30, 41, 59, 0.9);
-  padding: 30px 25px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  width: 100%;
+  max-width: 460px;   /* 🔥 bigger default size */
+  padding: 40px 30px;
+
+  background: rgba(30, 41, 59, 0.92);
+  border-radius: 18px;
+
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
   text-align: center;
+
+  transition: all 0.3s ease;
 }
 
+/* TITLES */
 .login-card h2 {
+  font-size: 24px;
   margin-bottom: 5px;
 }
 
@@ -245,35 +403,83 @@ body {
 /* INPUTS */
 .input-field {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin-bottom: 15px;
+
   border-radius: 10px;
   border: 1px solid #334155;
   background: #0f172a;
   color: white;
-  outline: none;
-  box-sizing: border-box;
-}
 
-.input-field:focus {
-  border-color: #22c55e;
+  font-size: 15px;
+  box-sizing: border-box;
 }
 
 /* BUTTON */
 .login-btn {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
+
   border: none;
   border-radius: 10px;
+
   background: #22c55e;
   color: white;
+
   font-weight: bold;
+  font-size: 15px;
+
   cursor: pointer;
   transition: 0.2s;
 }
 
 .login-btn:hover {
   background: #16a34a;
+}
+
+/* MOBILE ENHANCEMENT */
+@media (max-width: 768px) {
+
+  .login-card {
+    max-width: 95%;   /* 🔥 nearly full screen */
+    padding: 45px 20px;
+  }
+
+  .login-card h2 {
+    font-size: 26px;
+  }
+
+  .input-field,
+  .login-btn {
+    font-size: 16px;
+    padding: 15px;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+
+  border-radius: 50%;
+  display: inline-block;
+
+  margin-left: 8px;
+
+  animation: spin 0.8s linear infinite;
+}
+
+
+.hidden {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .wallet-summary {
@@ -419,7 +625,7 @@ body {
   }
 }
 
-.asset-card-clean,
+/* .asset-card-clean,
 .wallet-row,
 .stat-box,
 .wallet-card {
@@ -431,7 +637,7 @@ body {
 .stat-box:hover {
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+} */
 
 .big {
   transition: all 0.3s ease;
@@ -471,197 +677,135 @@ button:active {
   transform: scale(0.98);
 }
 
-/* =========================
-   GLOBAL RESPONSIVE FIX
-========================= */
+/* FIX CARD STRUCTURE */
+.wallet-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-* {
+  width: 100%;
   box-sizing: border-box;
+
+  padding: 12px 14px;
+  border-radius: 12px;
+
+  background: #020617;
+
+  overflow: hidden;
 }
 
-img {
+.asset-card-clean,
+.wallet-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
   max-width: 100%;
+
+  padding: 12px 14px;
+  box-sizing: border-box;
+
+  overflow: hidden; /* 🔥 key fix */
+  border-radius: 12px;
 }
 
-@media (max-width: 1024px) {
-  .container {
-    flex-direction: column;
-  }
+/* LEFT SIDE */
+.wallet-row,
+.asset-card-clean {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+/* LEFT SECTION (ICON + TEXT) */
+.asset-left,
+.wallet-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 
-  .right {
-    width: 100%;
-  }
+  flex: 1;
+  min-width: 0; /* 🔥 prevents overflow */
+}
 
-  .left {
-    width: 100%;
-  }
+/* TEXT BLOCK */
+.asset-left div,
+.wallet-left div {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* TITLE */
+.asset-left h4,
+.wallet-left h4 {
+  margin: 0;
+  font-size: 14px;
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* SUB TEXT */
+.asset-left small,
+.wallet-left small {
+  font-size: 12px;
+  color: #94a3b8;
+
+  white-space: nowrap;
+}
+
+/* RIGHT VALUE */
+.asset-right,
+.wallet-right {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-weight: bold;
+  color: #22c55e;
+}
+
+/* LOGO */
+.coin-logo,
+.wallet-left img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+
+  flex-shrink: 0;
+}
+html, body {
+  overflow-x: hidden !important; /* 🔥 HARD STOP for left-right scroll */
 }
 
 @media (max-width: 768px) {
 
-  /* NAVBAR */
-  .top-nav {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .top-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  /* WALLET BALANCE TEXT */
-  .big {
-    font-size: 24px;
-  }
-
-  /* STATS STACK */
-  .stats {
-    flex-direction: column;
-  }
-
-  /* TABLE SCROLL FIX */
-  .table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  /* BOTTOM NAV */
-  .bottom-nav {
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-
-  .top-links span {
-    font-size: 12px;
-  }
-
-  .wallet-card {
-    padding: 15px;
-  }
-
-  .asset-card-clean,
   .wallet-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+
+    width: 100%;
+    max-width: 100%;
+
+    gap: 10px;
   }
 
-  .asset-right,
+  .wallet-left {
+    width: 100%;
+  }
+
   .wallet-right {
-    align-self: flex-end;
-  }
-
-  .big {
-    font-size: 20px;
-  }
-}
-
-body {
-  overflow-x: hidden;
-}
-
-@media (max-width: 768px) {
-  .asset-card-clean {
-    transition: none;
-  }
-
-  .asset-card-clean:hover {
-    transform: none;
-  }
-}
-
-.hamburger {
-  display: none;
-  font-size: 26px;
-  cursor: pointer;
-  color: white;
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: block !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: block;
-  }
-
-  .top-links {
-    display: none;
-    flex-direction: column;
-    background: #1e293b;
     width: 100%;
-    padding: 10px;
-    margin-top: 10px;
+    text-align: right;
+
+    margin-top: 5px;
   }
 
-  .top-links.active {
-    display: flex;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-box {
-    width: 90%;
-    padding: 25px;
-  }
-
-  input {
-    font-size: 16px;
+  /* prevent right-side overflow */
+  body {
+    overflow-x: hidden;
   }
 }
 
-@media (max-width: 768px) {
-
-  .container {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .left, .right {
-    width: 100%;
-  }
-
-  .asset-card-clean,
-  .wallet-row,
-  .stat-box {
-    font-size: 16px;
-    padding: 15px;
-  }
-
-  .big {
-    font-size: 28px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 15px;
-  }
-
-  .top-nav {
-    padding: 10px 15px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hamburger {
-    display: block !important;
-  }
-
-  .top-links {
-    display: none;
-  }
-
-  .top-links.active {
-    display: flex;
-  }
-}

@@ -179,9 +179,12 @@ function showToast(message) {
     }, 2000);
 }
 
+// HAMBURGER TOGGLE
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
 
-hamburger.addEventListener("click", () => {
+if (hamburger) {
+  hamburger.addEventListener("click", () => {
     navLinks.classList.toggle("active");
-});
+  });
+}
