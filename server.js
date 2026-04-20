@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 /* =========================
    MODEL
 ========================= */
-const Portfolio = require("./models/Portfolio");
+const Portfolio = require("./models/portfolio");
 
 /* =========================
    INIT (FORCES SINGLE CLEAN DOC)
