@@ -30,4 +30,4 @@ function login() {
 
         setLoading(false);
     }, 1200);
-}
+}       

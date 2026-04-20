@@ -163,7 +163,9 @@ body {
   padding: 20px;
   border-radius: 16px;
   border: 1px solid #1f2937;
-  max-width: 360px;
+
+  width: 100%;        /* 🔥 allows full stretch */
+  max-width: none;    /* 🔥 removes restriction */
 }
 
 body {
@@ -298,10 +300,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   background: #020617;
-  padding: 12px 14px;
-  border-radius: 12px;
-  margin-bottom: 12px;
+
+  padding: 18px 20px;   /* 🔥 increased height */
+  border-radius: 14px;
+  margin-bottom: 16px;  /* 🔥 more spacing between cards */
+
+  min-height: 70px;     /* 🔥 forces taller cards */
 }
 
 /* LEFT SIDE */
