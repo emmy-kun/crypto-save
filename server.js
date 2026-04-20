@@ -11,10 +11,11 @@ app.use(express.static(__dirname));
 /* =========================
    CONNECT MONGODB
 ========================= */
-mongoose.connect("mongodb+srv://admin:admin00100@cluster0.4kjr64z.mongodb.net/cryptoDB?appName=Cluster0")
+require("dotenv").config();
+
+mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB connected"))
 .catch(err => console.log(err));
-
 /* =========================
    MODEL
 ========================= */
