@@ -1,28 +1,37 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 
+/* =========================
+   MIDDLEWARE
+========================= */
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
 /* =========================
-   CONNECT MONGODB
+   MONGODB CONNECTION
 ========================= */
-require("dotenv").config();
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB connected"))
-.catch(err => console.log(err));
+if (!MONGO_URI) {
+  console.error("❌ MONGO_URI is missing in environment variables");
+}
+
+mongoose.connect(MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log("MongoDB error:", err));
+
 /* =========================
    MODEL
 ========================= */
 const Portfolio = require("./models/portfolio");
 
 /* =========================
-   INIT (FORCES SINGLE CLEAN DOC)
+   INIT (ENSURES DATA EXISTS)
 ========================= */
 app.get("/init", async (req, res) => {
   let data = await Portfolio.findOne();
@@ -37,17 +46,13 @@ app.get("/init", async (req, res) => {
       },
       transactions: []
     });
-  } else {
-    data.assets = data.assets || {};
-    data.transactions = data.transactions || [];
-    await data.save();
   }
 
   res.json(data);
 });
 
 /* =========================
-   GET PORTFOLIO
+   GET PORTFOLIO DATA
 ========================= */
 app.get("/portfolio", async (req, res) => {
   const data = await Portfolio.findOne().sort({ _id: -1 });
@@ -63,7 +68,8 @@ app.get("/portfolio", async (req, res) => {
 });
 
 /* =========================
-   ADMIN UPDATE (FIXED)
+   ADMIN UPDATE ROUTE
+   (ASSETS + TRANSACTIONS)
 ========================= */
 app.post("/admin/update", async (req, res) => {
   const { assets, transactions } = req.body || {};
@@ -81,30 +87,35 @@ app.post("/admin/update", async (req, res) => {
   data.assets = data.assets || {};
   data.transactions = data.transactions || [];
 
-  // ✅ UPDATE ASSETS
+  /* =========================
+     UPDATE ASSETS
+  ========================= */
   if (assets) {
-    data.assets = assets;
+    data.assets = {
+      ...data.assets,
+      ...assets
+    };
   }
 
-  // ✅ ADD TRANSACTIONS (DO NOT OVERWRITE)
-if (Array.isArray(transactions)) {
-  transactions.forEach(newTx => {
-    const index = data.transactions.findIndex(
-      tx =>
-        tx.date === newTx.date &&
-        tx.amount === newTx.amount &&
-        tx.type === newTx.type
-    );
+  /* =========================
+     UPDATE TRANSACTIONS
+  ========================= */
+  if (Array.isArray(transactions)) {
+    transactions.forEach(newTx => {
+      const index = data.transactions.findIndex(
+        tx =>
+          tx.date === newTx.date &&
+          tx.amount === newTx.amount &&
+          tx.type === newTx.type
+      );
 
-    if (index !== -1) {
-      // ✅ UPDATE EXISTING TRANSACTION (change status)
-      data.transactions[index].status = newTx.status;
-    } else {
-      // ✅ ADD NEW TRANSACTION
-      data.transactions.push(newTx);
-    }
-  });
-}
+      if (index !== -1) {
+        data.transactions[index].status = newTx.status;
+      } else {
+        data.transactions.push(newTx);
+      }
+    });
+  }
 
   await data.save();
 
@@ -115,7 +126,7 @@ if (Array.isArray(transactions)) {
 });
 
 /* =========================
-   TEMP RESET ROUTE
+   RESET DATABASE (DEV ONLY)
 ========================= */
 app.get("/reset", async (req, res) => {
   await Portfolio.deleteMany({});

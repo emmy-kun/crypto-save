@@ -2,7 +2,7 @@ document.getElementById("nav-wallet").classList.add("nav-active");
 
 async function loadWallet() {
     try {
-        const res = await fetch("http://localhost:5000/portfolio");
+        const res = await fetch("https://crypto-save-production.up.railway.app");
         const data = await res.json();
 
         const assetsDiv = document.getElementById("walletAssets");

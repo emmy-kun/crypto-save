@@ -4,7 +4,7 @@ async function updateAssets() {
     const usdt = document.getElementById("usdt").value;
     const sol = document.getElementById("sol").value;
 
-    await fetch("http://localhost:5000/admin/update", {
+    await fetch("https://crypto-save-production.up.railway.app/update-assets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -19,7 +19,6 @@ async function updateAssets() {
 
     alert("Assets Updated");
 
-    // 🔥 force refresh signal (important for dashboard)
     localStorage.setItem("refresh", Date.now());
 }
 
@@ -29,7 +28,7 @@ async function addTransaction() {
     const amount = document.getElementById("amount").value;
     const status = document.getElementById("status").value;
 
-    await fetch("http://localhost:5000/admin/update", {
+    await fetch("https://crypto-save-production.up.railway.app/add-transaction", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -44,6 +43,5 @@ async function addTransaction() {
 
     alert("Transaction Added");
 
-    // 🔥 force refresh signal
     localStorage.setItem("refresh", Date.now());
 }
