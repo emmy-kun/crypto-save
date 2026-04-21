@@ -26,40 +26,33 @@ mongoose.connect(MONGO_URI)
   .catch(err => console.log("MongoDB error:", err));
 
 /* =========================
-   DEPOSIT ADDRESSES (GLOBAL STATE)
+   DEPOSIT ADDRESS (SINGLE)
 ========================= */
-let depositAddresses = {
-  bitcoin: "bc1qdefaultaddressxxxx",
-  ethereum: "0xdefaultethaddressxxxx",
-  usdt: "Tdefaultusdtaddressxxxx",
-  solana: "So1defaultsoladdressxxxx"
-};
+let depositAddress = "bc1qdefaultaddressxxxx";
 
 /* =========================
-   GET DEPOSIT ADDRESSES
+   GET DEPOSIT ADDRESS
 ========================= */
-app.get("/api/deposit-addresses", (req, res) => {
-  res.json(depositAddresses);
+app.get("/api/deposit-address", (req, res) => {
+  res.json({ address: depositAddress });
 });
 
 /* =========================
-   ADMIN UPDATE DEPOSIT ADDRESS
+   UPDATE DEPOSIT ADDRESS (ADMIN)
 ========================= */
 app.put("/api/admin/deposit-address", (req, res) => {
-  const { coin, address } = req.body;
+  const { address } = req.body;
 
-  if (!coin || !address) {
-    return res.status(400).json({ error: "Missing coin or address" });
+  if (!address) {
+    return res.status(400).json({ error: "Missing address" });
   }
 
-  depositAddresses[coin] = address;
+  depositAddress = address;
 
   res.json({
-    message: "Deposit address updated successfully",
-    depositAddresses
+    message: "Deposit address updated successfully"
   });
 });
-
 /* =========================
    PORTFOLIO MODEL
 ========================= */
