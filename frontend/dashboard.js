@@ -192,4 +192,48 @@ window.addEventListener("storage", () => {
     location.reload();
 });
 
+function openDeposit() {
+  document.getElementById("depositModal").style.display = "flex";
+}
+
+function closeDeposit() {
+  document.getElementById("depositModal").style.display = "none";
+}
+
+function openWithdraw() {
+  document.getElementById("withdrawModal").style.display = "flex";
+}
+
+function closeWithdraw() {
+  document.getElementById("withdrawModal").style.display = "none";
+}
+
+function submitDeposit() {
+  const coin = document.getElementById("depositCoin").value;
+  const address = document.getElementById("depositAddress").value;
+  const amount = document.getElementById("depositAmount").value;
+
+  if (!address || !amount) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  alert(`${coin.toUpperCase()} deposit request sent`);
+  closeDeposit();
+}
+
+function submitWithdraw() {
+  const coin = document.getElementById("withdrawCoin").value;
+  const address = document.getElementById("withdrawAddress").value;
+  const amount = document.getElementById("withdrawAmount").value;
+
+  if (!address || !amount) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  alert("Withdrawal request submitted. Await admin approval.");
+  closeWithdraw();
+}
+
 setInterval(fetchPortfolio, 5000);

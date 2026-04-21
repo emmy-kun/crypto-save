@@ -68,8 +68,7 @@ app.get("/portfolio", async (req, res) => {
 });
 
 /* =========================
-   ADMIN UPDATE ROUTE
-   (ASSETS + TRANSACTIONS)
+   ADMIN UPDATE (INCREMENTAL FIX)
 ========================= */
 app.post("/admin/update", async (req, res) => {
   const { assets, transactions } = req.body || {};
@@ -87,19 +86,15 @@ app.post("/admin/update", async (req, res) => {
   data.assets = data.assets || {};
   data.transactions = data.transactions || [];
 
-  /* =========================
-     UPDATE ASSETS
-  ========================= */
+  // ✅ INCREMENT ASSETS (NO MORE OVERWRITE)
   if (assets) {
-    data.assets = {
-      ...data.assets,
-      ...assets
-    };
+    data.assets.bitcoin = (data.assets.bitcoin || 0) + (assets.bitcoin || 0);
+    data.assets.ethereum = (data.assets.ethereum || 0) + (assets.ethereum || 0);
+    data.assets.usdt = (data.assets.usdt || 0) + (assets.usdt || 0);
+    data.assets.solana = (data.assets.solana || 0) + (assets.solana || 0);
   }
 
-  /* =========================
-     UPDATE TRANSACTIONS
-  ========================= */
+  // ✅ ADD OR UPDATE TRANSACTIONS
   if (Array.isArray(transactions)) {
     transactions.forEach(newTx => {
       const index = data.transactions.findIndex(

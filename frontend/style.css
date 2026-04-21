@@ -55,7 +55,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-
+  
   /* ✅ ADDED: pushes them to the far right */
   margin-left: auto;
 }
@@ -188,14 +188,7 @@ body {
   margin: 10px 0;
 }
 
-.deposit-btn {
-  margin-top: 10px;
-  padding: 10px;
-  background: #22c55e;
-  border: none;
-  color: white;
-  border-radius: 8px;
-}
+
 
 /* STATS */
 .stats {
@@ -815,3 +808,93 @@ html, body {
   }
 }
 
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.withdraw-btn {
+  background: #ef4444;
+  padding: 10px;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.deposit-btn {
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-box {
+  background: #020617;
+  width: 90%;
+  max-width: 420px;
+  border-radius: 16px;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header span {
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.modal-body {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-body label {
+  font-size: 13px;
+  color: #94a3b8;
+}
+
+.modal-body input,
+.modal-body select {
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: white;
+}
+
+.modal-footer {
+  margin-top: 15px;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 12px;
+  background: #22c55e;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
