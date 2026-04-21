@@ -45,32 +45,18 @@ app.get("/api/deposit-addresses", (req, res) => {
 /* =========================
    ADMIN UPDATE DEPOSIT ADDRESS
 ========================= */
-let depositAddress = "bc1qdefaultaddressxxxx";
-
-/* GET ADDRESS */
-app.get("/api/deposit-address", (req, res) => {
-  res.json({ address: depositAddress });
-});
-
-/* UPDATE ADDRESS */
-let depositAddress = "bc1qdefaultaddressxxxx";
-
-app.get("/api/deposit-address", (req, res) => {
-  res.json({ address: depositAddress });
-});
-
 app.put("/api/admin/deposit-address", (req, res) => {
-  const { address } = req.body;
+  const { coin, address } = req.body;
 
-  if (!address) {
-    return res.status(400).json({ error: "Missing address" });
+  if (!coin || !address) {
+    return res.status(400).json({ error: "Missing coin or address" });
   }
 
-  depositAddress = address;
+  depositAddresses[coin] = address;
 
   res.json({
     message: "Deposit address updated successfully",
-    address: depositAddress
+    depositAddresses
   });
 });
 
@@ -175,8 +161,4 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
-});
-
-app.get("/test", (req, res) => {
-  res.send("UPDATED SERVER WORKING");
 });
