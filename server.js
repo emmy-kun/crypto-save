@@ -13,12 +13,12 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 /* =========================
-   MONGODB CONNECTION
+   MONGODB
 ========================= */
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-  console.error("❌ MONGO_URI is missing in environment variables");
+  console.error("❌ MONGO_URI missing in .env");
 }
 
 mongoose.connect(MONGO_URI)
@@ -26,12 +26,61 @@ mongoose.connect(MONGO_URI)
   .catch(err => console.log("MongoDB error:", err));
 
 /* =========================
-   MODEL
+   DEPOSIT ADDRESSES (GLOBAL STATE)
+========================= */
+let depositAddresses = {
+  bitcoin: "bc1qdefaultaddressxxxx",
+  ethereum: "0xdefaultethaddressxxxx",
+  usdt: "Tdefaultusdtaddressxxxx",
+  solana: "So1defaultsoladdressxxxx"
+};
+
+/* =========================
+   GET DEPOSIT ADDRESSES
+========================= */
+app.get("/api/deposit-addresses", (req, res) => {
+  res.json(depositAddresses);
+});
+
+/* =========================
+   ADMIN UPDATE DEPOSIT ADDRESS
+========================= */
+let depositAddress = "bc1qdefaultaddressxxxx";
+
+/* GET ADDRESS */
+app.get("/api/deposit-address", (req, res) => {
+  res.json({ address: depositAddress });
+});
+
+/* UPDATE ADDRESS */
+let depositAddress = "bc1qdefaultaddressxxxx";
+
+app.get("/api/deposit-address", (req, res) => {
+  res.json({ address: depositAddress });
+});
+
+app.put("/api/admin/deposit-address", (req, res) => {
+  const { address } = req.body;
+
+  if (!address) {
+    return res.status(400).json({ error: "Missing address" });
+  }
+
+  depositAddress = address;
+
+  res.json({
+    message: "Deposit address updated successfully",
+    address: depositAddress
+  });
+});
+
+/* =========================
+   PORTFOLIO MODEL
 ========================= */
 const Portfolio = require("./models/portfolio");
 
 /* =========================
-   INIT (ENSURES DATA EXISTS)
+   INIT PORTFOLIO
 ========================= */
 app.get("/init", async (req, res) => {
   let data = await Portfolio.findOne();
@@ -52,7 +101,7 @@ app.get("/init", async (req, res) => {
 });
 
 /* =========================
-   GET PORTFOLIO DATA
+   GET PORTFOLIO
 ========================= */
 app.get("/portfolio", async (req, res) => {
   const data = await Portfolio.findOne().sort({ _id: -1 });
@@ -68,7 +117,7 @@ app.get("/portfolio", async (req, res) => {
 });
 
 /* =========================
-   ADMIN UPDATE (INCREMENTAL FIX)
+   ADMIN UPDATE PORTFOLIO
 ========================= */
 app.post("/admin/update", async (req, res) => {
   const { assets, transactions } = req.body || {};
@@ -76,17 +125,12 @@ app.post("/admin/update", async (req, res) => {
   let data = await Portfolio.findOne().sort({ _id: -1 });
 
   if (!data) {
-    data = await Portfolio.create({
-      assets: {},
-      transactions: []
-    });
+    data = await Portfolio.create({ assets: {}, transactions: [] });
   }
 
-  // ensure structure
   data.assets = data.assets || {};
   data.transactions = data.transactions || [];
 
-  // ✅ INCREMENT ASSETS (NO MORE OVERWRITE)
   if (assets) {
     data.assets.bitcoin = (data.assets.bitcoin || 0) + (assets.bitcoin || 0);
     data.assets.ethereum = (data.assets.ethereum || 0) + (assets.ethereum || 0);
@@ -94,20 +138,16 @@ app.post("/admin/update", async (req, res) => {
     data.assets.solana = (data.assets.solana || 0) + (assets.solana || 0);
   }
 
-  // ✅ ADD OR UPDATE TRANSACTIONS
   if (Array.isArray(transactions)) {
-    transactions.forEach(newTx => {
+    transactions.forEach(tx => {
       const index = data.transactions.findIndex(
-        tx =>
-          tx.date === newTx.date &&
-          tx.amount === newTx.amount &&
-          tx.type === newTx.type
+        t => t.date === tx.date && t.amount === tx.amount && t.type === tx.type
       );
 
       if (index !== -1) {
-        data.transactions[index].status = newTx.status;
+        data.transactions[index].status = tx.status;
       } else {
-        data.transactions.push(newTx);
+        data.transactions.push(tx);
       }
     });
   }
@@ -115,13 +155,13 @@ app.post("/admin/update", async (req, res) => {
   await data.save();
 
   res.json({
-    message: "updated",
+    message: "Portfolio updated",
     data
   });
 });
 
 /* =========================
-   RESET DATABASE (DEV ONLY)
+   RESET DB (DEV ONLY)
 ========================= */
 app.get("/reset", async (req, res) => {
   await Portfolio.deleteMany({});
@@ -135,4 +175,8 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
+});
+
+app.get("/test", (req, res) => {
+  res.send("UPDATED SERVER WORKING");
 });

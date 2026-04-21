@@ -36,15 +36,20 @@
   <!-- MAIN LAYOUT -->
   <div class="container">
 
-    <!-- LEFT SIDE -->
+    <!-- LEFT SIDE (STACKED CARDS) -->
     <div class="left">
-
-      <!-- WALLET -->
+      <div id="userGreeting" class="user-greeting"></div>
+      <!-- WALLET CARD -->
       <div class="wallet-card">
         <p>Main Wallet Balance</p>
+
+
         <div class="balance-row">
+
           <div class="big" id="total">$0.00</div>
+
           <span id="toggleBalance" class="eye-btn">
+
             <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
               viewBox="0 0 24 24">
               <path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12a5 5 0 110-10 5 5 0 010 10z" />
@@ -53,30 +58,36 @@
 
             <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
               viewBox="0 0 24 24" style="display:none;">
-              <path
-                d="M2 4l20 20-1.5 1.5-3.1-3.1A10.8 10.8 0 0112 19C5 19 2 12 2 12s1.8-3.6 5-5.9L.5 2.5 2 4zm10 3c2.8 0 5 2.2 5 5 0 .7-.1 1.3-.4 1.9l-6.5-6.5c.6-.2 1.2-.4 1.9-.4z" />
+              <path d="M2 4l20 20-1.5 1.5-3.1-3.1A10.8 10.8 0 0112 19C5 19 2 12 2 12s1.8-3.6 5-5.9L.5 2.5 2 4z" />
             </svg>
+
           </span>
+
         </div>
         <div class="action-buttons">
           <button class="deposit-btn" onclick="openDeposit()">Deposit</button>
           <button class="withdraw-btn" onclick="openWithdraw()">Withdraw</button>
         </div>
 
-        <!-- INTEREST + APY -->
-        <div class="stats">
-          <div class="stat-box">
-            <h4>Interest</h4>
-            <p>12.5%</p>
-          </div>
+      </div>
 
-          <div class="stat-box">
-            <h4>APY</h4>
-            <p>3.8%</p>
-          </div>
+      <!-- INTEREST CARD -->
+      <div class="stats-row">
+
+        <div class="stat-box">
+          <h4>Interest</h4>
+          <p>12.5%</p>
         </div>
 
-        <!-- TRANSACTIONS -->
+        <div class="stat-box">
+          <h4>APY</h4>
+          <p>3.8%</p>
+        </div>
+
+      </div>
+      <!-- TRANSACTIONS CARD -->
+      <div class="transactions-card">
+
         <div class="section-title">Recent Transactions</div>
 
         <table class="table">
@@ -89,15 +100,17 @@
             </tr>
           </thead>
 
-          <tbody id="transactions">
-            <!-- JS will fill -->
-          </tbody>
+          <tbody id="transactions"></tbody>
         </table>
 
       </div>
 
-      <!-- RIGHT SIDE -->
-      <div class="right">
+    </div>
+
+    <!-- RIGHT SIDE (PORTFOLIO) -->
+    <div class="right">
+
+      <div class="portfolio-card">
 
         <div class="section-title">Portfolio Overview</div>
 
@@ -107,109 +120,98 @@
 
     </div>
 
-    <!-- DEPOSIT MODAL -->
-    <div id="depositModal" class="modal">
-      <div class="modal-box">
+  </div>
+  <!-- DEPOSIT MODAL -->
+  <div id="depositModal" class="modal">
+    <div class="modal-box">
 
-        <div class="modal-header">
-          <h3>Deposit Funds</h3>
-          <span onclick="closeDeposit()">×</span>
-        </div>
+      <div class="modal-header">
+        <h3>Deposit Address</h3>
+        <span onclick="closeDeposit()">×</span>
+      </div>
 
-        <div class="modal-body">
+      <div class="modal-body">
 
-          <label>Select Coin</label>
-          <select id="depositCoin">
-            <option value="bitcoin">Bitcoin (BTC)</option>
-            <option value="ethereum">Ethereum (ETH)</option>
-            <option value="usdt">Tether (USDT)</option>
-            <option value="usdc">USD Coin (USDC)</option>
-            <option value="binancecoin">BNB (BNB)</option>
-            <option value="solana">Solana (SOL)</option>
-            <option value="xrp">XRP (XRP)</option>
-            <option value="cardano">Cardano (ADA)</option>
-            <option value="dogecoin">Dogecoin (DOGE)</option>
-            <option value="tron">TRON (TRX)</option>
-            <option value="polkadot">Polkadot (DOT)</option>
-            <option value="litecoin">Litecoin (LTC)</option>
-            <option value="chainlink">Chainlink (LINK)</option>
-            <option value="avalanche">Avalanche (AVAX)</option>
-            <option value="polygon">Polygon (MATIC)</option>
-            <option value="stellar">Stellar (XLM)</option>
-            <option value="cosmos">Cosmos (ATOM)</option>
-            <option value="monero">Monero (XMR)</option>
-            <option value="bitcoin-cash">Bitcoin Cash (BCH)</option>
-            <option value="aptos">Aptos (APT)</option>
-          </select>
-         
+        <p style="color:#94a3b8; font-size:13px;">
+          Send funds only to this address
+        </p>
 
-          <label>Wallet Address</label>
-          <input type="text" id="depositAddress" placeholder="Enter your wallet address" />
+<!-- ADDRESS ROW -->
+<div class="address-row">
 
-          <label>Amount</label>
-          <input type="number" id="depositAmount" placeholder="Enter amount" />
+  <div id="depositWalletAddress" class="wallet-address-box">
+    Loading address...
+  </div>
 
-        </div>
+  <!-- COPY BUTTON (PRO ICON) -->
+  <button class="copy-icon" onclick="copyDepositAddress()" title="Copy address">
 
-        <div class="modal-footer">
-          <button class="primary-btn" onclick="submitDeposit()">Confirm Deposit</button>
-        </div>
+    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 24 24">
+      <path d="M16 1H4c-1.1 0-2 .9-2 2v12h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+    </svg>
+
+  </button>
+
+</div>
 
       </div>
+
     </div>
+  </div>
+  </div>
 
 
-    <!-- WITHDRAW MODAL -->
-    <div id="withdrawModal" class="modal">
-      <div class="modal-box">
+  <!-- WITHDRAW MODAL -->
+  <div id="withdrawModal" class="modal">
+    <div class="modal-box">
 
-        <div class="modal-header">
-          <h3>Withdraw Funds</h3>
-          <span onclick="closeWithdraw()">×</span>
-        </div>
+      <div class="modal-header">
+        <h3>Withdraw Funds</h3>
+        <span onclick="closeWithdraw()">×</span>
+      </div>
 
-        <div class="modal-body">
+      <div class="modal-body">
 
-          <label>Select Coin</label>
-          <select id="withdrawCoin">
-            <option value="bitcoin">Bitcoin (BTC)</option>
-            <option value="ethereum">Ethereum (ETH)</option>
-            <option value="usdt">Tether (USDT)</option>
-            <option value="usdc">USD Coin (USDC)</option>
-            <option value="binancecoin">BNB (BNB)</option>
-            <option value="solana">Solana (SOL)</option>
-            <option value="xrp">XRP (XRP)</option>
-            <option value="cardano">Cardano (ADA)</option>
-            <option value="dogecoin">Dogecoin (DOGE)</option>
-            <option value="tron">TRON (TRX)</option>
-            <option value="polkadot">Polkadot (DOT)</option>
-            <option value="litecoin">Litecoin (LTC)</option>
-            <option value="chainlink">Chainlink (LINK)</option>
-            <option value="avalanche">Avalanche (AVAX)</option>
-            <option value="polygon">Polygon (MATIC)</option>
-            <option value="stellar">Stellar (XLM)</option>
-            <option value="cosmos">Cosmos (ATOM)</option>
-            <option value="monero">Monero (XMR)</option>
-            <option value="bitcoin-cash">Bitcoin Cash (BCH)</option>
-            <option value="aptos">Aptos (APT)</option>
-          </select>
-          </select>
+        <label>Select Coin</label>
+        <select id="withdrawCoin">
+          <option value="bitcoin">Bitcoin (BTC)</option>
+          <option value="ethereum">Ethereum (ETH)</option>
+          <option value="usdt">Tether (USDT)</option>
+          <option value="usdc">USD Coin (USDC)</option>
+          <option value="binancecoin">BNB (BNB)</option>
+          <option value="solana">Solana (SOL)</option>
+          <option value="xrp">XRP (XRP)</option>
+          <option value="cardano">Cardano (ADA)</option>
+          <option value="dogecoin">Dogecoin (DOGE)</option>
+          <option value="tron">TRON (TRX)</option>
+          <option value="polkadot">Polkadot (DOT)</option>
+          <option value="litecoin">Litecoin (LTC)</option>
+          <option value="chainlink">Chainlink (LINK)</option>
+          <option value="avalanche">Avalanche (AVAX)</option>
+          <option value="polygon">Polygon (MATIC)</option>
+          <option value="stellar">Stellar (XLM)</option>
+          <option value="cosmos">Cosmos (ATOM)</option>
+          <option value="monero">Monero (XMR)</option>
+          <option value="bitcoin-cash">Bitcoin Cash (BCH)</option>
+          <option value="aptos">Aptos (APT)</option>
+        </select>
+        </select>
 
-          <label>Destination Address</label>
-          <input type="text" id="withdrawAddress" placeholder="Enter wallet address" />
+        <label>Destination Address</label>
+        <input type="text" id="withdrawAddress" placeholder="Enter wallet address" />
 
-          <label>Amount</label>
-          <input type="number" id="withdrawAmount" placeholder="Enter amount" />
-
-        </div>
-
-        <div class="modal-footer">
-          <button class="primary-btn" onclick="submitWithdraw()">Confirm Withdrawal</button>
-        </div>
+        <label>Amount</label>
+        <input type="number" id="withdrawAmount" placeholder="Enter amount" />
 
       </div>
+
+      <div class="modal-footer">
+        <button class="primary-btn" onclick="submitWithdraw()">Confirm Withdrawal</button>
+      </div>
+
     </div>
-    <script src="dashboard.js"></script>
+  </div>
+  <script src="dashboard.js"></script>
 </body>
 
 </html>

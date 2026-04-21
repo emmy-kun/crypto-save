@@ -3,6 +3,8 @@ function setLoading(state) {
     const btnText = document.getElementById("btnText");
     const loginBtn = document.getElementById("loginBtn");
 
+    if (!spinner || !btnText || !loginBtn) return;
+
     if (state) {
         spinner.classList.remove("hidden");
         btnText.textContent = "Signing in...";
@@ -21,13 +23,22 @@ function login() {
     const password = document.getElementById("password").value;
 
     setTimeout(() => {
+
         if (username && password) {
+
+            // ✅ SAVE USER CORRECTLY
             localStorage.setItem("user", username);
+
+            // optional: store login state
+            localStorage.setItem("loggedIn", "true");
+
             window.location.href = "dashboard.html";
+
         } else {
             alert("Please fill all fields");
         }
 
         setLoading(false);
+
     }, 1200);
-}       
+}

@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: Arial;
-  background: #0f172a;
+  background: linear-gradient(135deg, #0f172a, #020617);
   color: white;
 }
 
@@ -18,6 +18,7 @@ body {
   position: sticky;
   top: 0;
   z-index: 1000;
+  margin-bottom: 20px;
 }
 
 .nav-left {
@@ -58,6 +59,13 @@ body {
   
   /* ✅ ADDED: pushes them to the far right */
   margin-left: auto;
+}
+
+.wallet-card,
+.stats,
+.table,
+.section-title {
+  margin-bottom: 15px;
 }
 
 /* USER BUTTON */
@@ -109,10 +117,6 @@ body {
   }
 
   /* LAYOUT STACK */
-  .container {
-    flex-direction: column;
-    padding: 15px;
-  }
 
   .left, .right {
     width: 100%;
@@ -134,39 +138,43 @@ body {
 
 /* LAYOUT */
 .container {
-  display: flex;
-  gap: 25px;
-  padding: 30px;
-  max-width: 1400px; /* ✅ increased width */
-  margin: auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
 }
 
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .left,
-  .right {
-    width: 100%;
-  }
-}
-
-/* LEFT & RIGHT */
+/* LEFT SIDE (wallet, balance, transactions) */
 .left {
-  flex: 1.6;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
+/* RIGHT SIDE (portfolio overview) */
 .right {
-  flex: 1;
-  background: rgba(17, 24, 39, 0.9);
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* .left,
+.right {
+  background: rgba(17, 24, 39, 0.6);
   padding: 20px;
   border-radius: 16px;
   border: 1px solid #1f2937;
+} */
 
-  width: 100%;        /* 🔥 allows full stretch */
-  max-width: none;    /* 🔥 removes restriction */
+@media (max-width: 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+
 }
+
 
 body {
   overflow-x: hidden; /* ✅ stops side scroll completely */
@@ -197,6 +205,16 @@ body {
   margin: 15px 0;
 }
 
+.stats-row {
+  display: flex;
+  gap: 15px;
+}
+
+.stats-row .stat-box {
+  flex: 1;
+  background-color: #1f2937;;
+}
+
 .stat-box {
   flex: 1;
   background: #1e293b;
@@ -220,7 +238,7 @@ body {
   margin-right: 10px;
 }
 
-/* TABLE */
+
 /* TABLE */
 .table {
   width: 100%;
@@ -294,13 +312,19 @@ body {
   justify-content: space-between;
   align-items: center;
 
-  background: #020617;
+  background: linear-gradient(135deg, #0f172a, #020617);
+  border: 1px solid #1f2937;
 
-  padding: 18px 20px;   /* 🔥 increased height */
+  padding: 16px;
   border-radius: 14px;
-  margin-bottom: 16px;  /* 🔥 more spacing between cards */
+  margin-bottom: 12px;
 
-  min-height: 70px;     /* 🔥 forces taller cards */
+  transition: 0.2s;
+}
+
+.asset-card-clean:hover {
+  transform: translateY(-2px);
+  border-color: #22c55e;
 }
 
 /* LEFT SIDE */
@@ -779,6 +803,36 @@ html, body {
   overflow-x: hidden !important; /* 🔥 HARD STOP for left-right scroll */
 }
 
+.wallet-card {
+  background: linear-gradient(135deg, #1e293b, #020617);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #1f2937;
+}
+
+/* CARD BASE STYLE (IMPORTANT RESTORE) */
+.wallet-card,
+.stat-box,
+.transactions-card {
+  background: #020617;
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid #1f2937;
+}
+
+.portfolio-card {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid #1f2937;
+  padding: 20px;
+  border-radius: 16px;
+}
+
+.section-title {
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
 @media (max-width: 768px) {
 
   .wallet-row {
@@ -897,4 +951,64 @@ html, body {
   color: white;
   font-weight: bold;
   cursor: pointer;
+}
+
+.wallet-card{
+ background: linear-gradient(135deg, #1e293b, #020617);
+}
+
+.user-greeting {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 8px;
+}
+
+.user-greeting strong {
+  color: #22c55e;
+  font-size: 16px;
+}
+
+.wallet-title {
+  margin: 0;
+  color: #cbd5e1;
+  font-size: 13px;
+}
+
+.address-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wallet-address-box {
+  flex: 1;
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  font-size: 13px;
+  word-break: break-all;
+  color: #22c55e;
+}
+
+.copy-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #1e293b;
+  border: 1px solid #334155;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 10px;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.copy-icon:hover {
+  background: #334155;
+  transform: scale(1.05);
 }

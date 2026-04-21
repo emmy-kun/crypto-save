@@ -1,3 +1,4 @@
+let currentTotal = 0;
 document.getElementById("nav-wallet").classList.add("nav-active");
 
 async function loadWallet() {
@@ -70,15 +71,12 @@ async function loadWallet() {
             });
         }
 
-        /* =========================
-           UPDATE TOTAL BALANCE
-        ========================== */
-        const totalEl = document.getElementById("walletTotal");
-
-        if (totalEl) {
-            totalEl.innerText = "$" + total.toFixed(2);
-        }
-
+/* =========================
+   UPDATE TOTAL BALANCE (FIXED)
+========================= */
+if (typeof updateBalanceUI === "function") {
+    updateBalanceUI(total);
+}
         /* =========================
            UPDATE ASSET COUNT
         ========================== */
@@ -105,3 +103,62 @@ if (hamburger) {
     navLinks.classList.toggle("active");
   });
 }
+
+const toggleBtn = document.getElementById("toggleBalance");
+const totalEl = document.getElementById("walletTotal");
+
+const eyeOpen = document.getElementById("eyeOpen");
+const eyeClosed = document.getElementById("eyeClosed");
+
+let hidden = localStorage.getItem("hideBalance") === "true";
+
+function updateBalanceUI(value) {
+  if (value !== undefined) {
+    currentTotal = value; // ✅ store latest real value
+  }
+
+  if (hidden) {
+    totalEl.innerText = "****";
+    eyeOpen.style.display = "none";
+    eyeClosed.style.display = "inline";
+  } else {
+    totalEl.innerText = "$" + currentTotal.toFixed(2); // ✅ use stored value
+    eyeOpen.style.display = "inline";
+    eyeClosed.style.display = "none";
+  }
+}
+
+toggleBtn.addEventListener("click", () => {
+  hidden = !hidden;
+  localStorage.setItem("hideBalance", hidden);
+  updateBalanceUI(); // ✅ now works because value is stored
+});
+
+function openDeposit() {
+  document.getElementById("depositModal").style.display = "flex";
+}
+
+function closeDeposit() {
+  document.getElementById("depositModal").style.display = "none";
+}
+
+function openWithdraw() {
+  document.getElementById("withdrawModal").style.display = "flex";
+}
+
+function closeWithdraw() {
+  document.getElementById("withdrawModal").style.display = "none";
+}
+
+function submitDeposit() {
+  alert("Deposit request sent");
+  closeDeposit();
+}
+
+function submitWithdraw() {
+  alert("Withdrawal request submitted");
+  closeWithdraw();
+}
+
+
+setInterval(loadPortfolio, 5000);

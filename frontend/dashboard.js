@@ -1,10 +1,95 @@
-// 🔒 redirect if not logged in
+/* =========================
+   AUTH CHECK
+========================= */
 if (!localStorage.getItem("user")) {
     window.location.href = "index.html";
 }
 
-document.getElementById("nav-dashboard").classList.add("nav-active");
+let depositAddresses = {};
 
+/* =========================
+   LOAD DEPOSIT ADDRESSES
+========================= */
+async function loadDepositAddresses() {
+  try {
+    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
+    depositAddresses = await res.json();
+  } catch (err) {
+    console.log("Failed to load deposit addresses", err);
+  }
+}
+
+/* =========================
+   UPDATE ADDRESS DISPLAY
+========================= */
+function updateDepositAddress() {
+  const coin = document.getElementById("depositCoin")?.value;
+  const el = document.getElementById("depositWalletAddress");
+
+  if (!el) return;
+
+  el.innerText = depositAddresses[coin] || "Address not available";
+}
+
+/* =========================
+   COPY ADDRESS (PROFESSIONAL)
+========================= */
+function copyDepositAddress() {
+  const el = document.getElementById("depositWalletAddress");
+
+  if (!el) return;
+
+  navigator.clipboard.writeText(el.innerText);
+  showToast("Address copied");
+}
+
+async function loadDepositAddresses() {
+  try {
+    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
+    depositAddresses = await res.json();
+  } catch (err) {
+    console.log("Failed to load deposit addresses", err);
+  }
+}
+
+/* =========================
+   STATE
+========================= */
+let hidden = localStorage.getItem("hideBalance") === "true";
+
+/* =========================
+   DOM READY
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+    const nav = document.getElementById("nav-dashboard");
+    if (nav) nav.classList.add("nav-active");
+
+    setupGreeting();
+    setupBalanceToggle();
+    loadPortfolio();
+    loadDepositAddresses(); // 🔥 ADD THIS
+
+    setInterval(loadPortfolio, 5000);
+});
+
+/* =========================
+   GREETING
+========================= */
+function setupGreeting() {
+    const user = localStorage.getItem("user");
+    const el = document.getElementById("userGreeting");
+
+    if (!user || !el) return;
+
+    const name = user.charAt(0).toUpperCase() + user.slice(1);
+    el.innerHTML = `Welcome back, <strong>${name}</strong>`;
+}
+
+
+/* =========================
+   PORTFOLIO LOADER
+========================= */
 async function loadPortfolio() {
     try {
         const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
@@ -12,6 +97,9 @@ async function loadPortfolio() {
 
         const assetsDiv = document.getElementById("assets");
         const txTable = document.getElementById("transactions");
+        const totalEl = document.getElementById("total");
+
+        if (!assetsDiv || !txTable || !totalEl) return;
 
         assetsDiv.innerHTML = "";
         txTable.innerHTML = "";
@@ -33,7 +121,7 @@ async function loadPortfolio() {
         };
 
         /* =========================
-           RENDER ASSETS
+           ASSETS
         ========================== */
         if (data.assets) {
             for (let key in data.assets) {
@@ -53,7 +141,6 @@ async function loadPortfolio() {
                             <small>${amount}</small>
                         </div>
                     </div>
-
                     <div class="asset-right">
                         <strong>$${value.toFixed(2)}</strong>
                     </div>
@@ -66,15 +153,14 @@ async function loadPortfolio() {
         /* =========================
            TOTAL BALANCE
         ========================== */
-        const totalEl = document.getElementById("total");
-
         if (hidden) {
             totalEl.innerText = "****";
         } else {
             animateValue(totalEl, total);
         }
+
         /* =========================
-           ALL TRANSACTIONS (FIXED)
+           TRANSACTIONS
         ========================== */
         const recent = (data.transactions || []).reverse();
 
@@ -101,46 +187,43 @@ async function loadPortfolio() {
     }
 }
 
-/* AUTO LOAD */
-loadPortfolio();
 
-/* AUTO REFRESH */
-setInterval(loadPortfolio, 5000);
+/* =========================
+   BALANCE TOGGLE (EYE)
+========================= */
+function setupBalanceToggle() {
+    const toggleBtn = document.getElementById("toggleBalance");
+    const totalEl = document.getElementById("total");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
 
-/* LOGOUT */
-function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "index.html";
-}
+    if (!toggleBtn || !totalEl || !eyeOpen || !eyeClosed) return;
 
-const toggleBtn = document.getElementById("toggleBalance");
-const totalEl = document.getElementById("total");
-
-const eyeOpen = document.getElementById("eyeOpen");
-const eyeClosed = document.getElementById("eyeClosed");
-
-let hidden = localStorage.getItem("hideBalance") === "true";
-
-function updateUI() {
-    if (hidden) {
-        totalEl.innerText = "****";
-        eyeOpen.style.display = "none";
-        eyeClosed.style.display = "inline";
-    } else {
-        loadPortfolio();
-        eyeOpen.style.display = "inline";
-        eyeClosed.style.display = "none";
+    function updateUI() {
+        if (hidden) {
+            totalEl.innerText = "****";
+            eyeOpen.style.display = "none";
+            eyeClosed.style.display = "inline";
+        } else {
+            eyeOpen.style.display = "inline";
+            eyeClosed.style.display = "none";
+            loadPortfolio();
+        }
     }
+
+    toggleBtn.addEventListener("click", () => {
+        hidden = !hidden;
+        localStorage.setItem("hideBalance", hidden);
+        updateUI();
+    });
+
+    updateUI();
 }
 
-toggleBtn.addEventListener("click", () => {
-    hidden = !hidden;
-    localStorage.setItem("hideBalance", hidden);
-    updateUI();
-});
 
-updateUI();
-
+/* =========================
+   ANIMATION
+========================= */
 function animateValue(el, newValue) {
     let start = parseFloat(el.innerText.replace("$", "")) || 0;
     let end = newValue;
@@ -164,6 +247,19 @@ function animateValue(el, newValue) {
     requestAnimationFrame(animate);
 }
 
+
+/* =========================
+   LOGOUT
+========================= */
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}
+
+
+/* =========================
+   TOAST
+========================= */
 function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
@@ -179,61 +275,51 @@ function showToast(message) {
     }, 2000);
 }
 
-// HAMBURGER TOGGLE
+
+/* =========================
+   MODALS
+========================= */
+function openDeposit() {
+    document.getElementById("depositModal").style.display = "flex";
+}
+
+function closeDeposit() {
+    document.getElementById("depositModal").style.display = "none";
+}
+
+function openWithdraw() {
+    document.getElementById("withdrawModal").style.display = "flex";
+}
+
+function closeWithdraw() {
+    document.getElementById("withdrawModal").style.display = "none";
+}
+
+function updateDepositAddress() {
+  const coin = document.getElementById("depositCoin").value;
+
+  const el = document.getElementById("depositWalletAddress");
+
+  if (!el) return;
+
+  el.innerText = depositAddresses[coin] || "Address not available";
+}
+
+function copyDepositAddress() {
+  const el = document.getElementById("depositWalletAddress");
+
+  if (!el) return;
+
+  navigator.clipboard.writeText(el.innerText);
+
+  showToast("Address copied");
+}
+
 const hamburger = document.getElementById("hamburger");
 const navLinks = document.getElementById("navLinks");
 
-if (hamburger) {
+if (hamburger && navLinks) {
   hamburger.addEventListener("click", () => {
     navLinks.classList.toggle("active");
   });
 }
-window.addEventListener("storage", () => {
-    location.reload();
-});
-
-function openDeposit() {
-  document.getElementById("depositModal").style.display = "flex";
-}
-
-function closeDeposit() {
-  document.getElementById("depositModal").style.display = "none";
-}
-
-function openWithdraw() {
-  document.getElementById("withdrawModal").style.display = "flex";
-}
-
-function closeWithdraw() {
-  document.getElementById("withdrawModal").style.display = "none";
-}
-
-function submitDeposit() {
-  const coin = document.getElementById("depositCoin").value;
-  const address = document.getElementById("depositAddress").value;
-  const amount = document.getElementById("depositAmount").value;
-
-  if (!address || !amount) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  alert(`${coin.toUpperCase()} deposit request sent`);
-  closeDeposit();
-}
-
-function submitWithdraw() {
-  const coin = document.getElementById("withdrawCoin").value;
-  const address = document.getElementById("withdrawAddress").value;
-  const amount = document.getElementById("withdrawAmount").value;
-
-  if (!address || !amount) {
-    alert("Please fill all fields");
-    return;
-  }
-
-  alert("Withdrawal request submitted. Await admin approval.");
-  closeWithdraw();
-}
-
-setInterval(fetchPortfolio, 5000);
