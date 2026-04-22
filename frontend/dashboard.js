@@ -5,12 +5,11 @@ if (!localStorage.getItem("user")) {
     window.location.href = "index.html";
 }
 
-let depositAddress = "";
-
 /* =========================
    STATE
 ========================= */
 let hidden = localStorage.getItem("hideBalance") === "true";
+let depositAddress = "";
 
 /* =========================
    DOM READY
@@ -23,10 +22,19 @@ document.addEventListener("DOMContentLoaded", () => {
     setupGreeting();
     setupBalanceToggle();
     loadPortfolio();
+    loadDepositAddress();
 
     setInterval(loadPortfolio, 5000);
 
-    loadDepositAddress();
+    // hamburger
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
+        });
+    }
 });
 
 /* =========================
@@ -43,7 +51,7 @@ function setupGreeting() {
 }
 
 /* =========================
-   PORTFOLIO LOADER
+   PORTFOLIO
 ========================= */
 async function loadPortfolio() {
     try {
@@ -192,7 +200,7 @@ function animateValue(el, newValue) {
 }
 
 /* =========================
-   MODALS (RESTORED)
+   MODALS
 ========================= */
 function openDeposit() {
     const modal = document.getElementById("depositModal");
@@ -206,7 +214,21 @@ function closeDeposit() {
 
 function openWithdraw() {
     const modal = document.getElementById("withdrawModal");
-    if (modal) modal.style.display = "flex";
+
+    if (!modal) {
+        console.log("withdrawModal not found");
+        return;
+    }
+
+    modal.style.display = "flex";
+}
+
+function submitWithdraw() {
+    showToast("Withdrawal period not elapsed, contact admin");
+
+    // optional: close modal after message
+    const modal = document.getElementById("withdrawModal");
+    if (modal) modal.style.display = "none";
 }
 
 function closeWithdraw() {
@@ -214,24 +236,48 @@ function closeWithdraw() {
     if (modal) modal.style.display = "none";
 }
 
+/* =========================
+   DEPOSIT ADDRESS (FIXED)
+========================= */
 async function loadDepositAddress() {
-  try {
-    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
-    const data = await res.json();
+    try {
+        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+        const data = await res.json();
 
-    depositAddress = data.address;
+        depositAddress = data.address || "";
 
-    const el = document.getElementById("depositWalletAddress");
-    if (el) el.innerText = depositAddress;
+        const el = document.getElementById("depositWalletAddress");
 
-  } catch (err) {
-    console.log("Failed to load address", err);
-  }
+        if (el) {
+            el.innerText = depositAddress || "No address set";
+        }
+
+    } catch (err) {
+        console.log("Failed to load deposit address", err);
+    }
 }
 
 function copyDepositAddress() {
-  if (!depositAddress) return;
+    if (!depositAddress) return;
 
-  navigator.clipboard.writeText(depositAddress);
-  showToast("Address copied");
+    navigator.clipboard.writeText(depositAddress);
+    showToast("Address copied");
+}
+
+/* =========================
+   TOAST
+========================= */
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 100);
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
 }

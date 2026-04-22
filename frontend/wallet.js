@@ -1,18 +1,38 @@
 let currentTotal = 0;
-document.getElementById("nav-wallet").classList.add("nav-active");
+let depositAddress = "";
+let hidden = localStorage.getItem("hideBalance") === "true";
 
+/* =========================
+   INIT
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.getElementById("nav-wallet");
+    if (nav) nav.classList.add("nav-active");
+
+    loadWallet();
+    loadDepositAddress();
+    setupHamburger();
+    setupToggleBalance();
+});
+
+/* =========================
+   WALLET DATA
+========================= */
 async function loadWallet() {
     try {
         const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
         const data = await res.json();
 
         const assetsDiv = document.getElementById("walletAssets");
+        const countEl = document.getElementById("assetCount");
+
+        if (!assetsDiv) return;
+
         assetsDiv.innerHTML = "";
 
         let total = 0;
         let count = 0;
 
-        // TEMP PRICES (we upgrade later)
         const prices = {
             bitcoin: 65000,
             ethereum: 3500,
@@ -20,7 +40,6 @@ async function loadWallet() {
             solana: 150
         };
 
-        // ✅ LOGOS (with fallback safety)
         const logos = {
             bitcoin: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
             ethereum: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
@@ -28,20 +47,12 @@ async function loadWallet() {
             solana: "https://assets.coingecko.com/coins/images/4128/large/solana.png"
         };
 
-        /* =========================
-           SAFE LOOP THROUGH ASSETS
-        ========================== */
-        if (data.assets && typeof data.assets === "object") {
-
+        if (data.assets) {
             Object.keys(data.assets).forEach(key => {
-
                 const amount = Number(data.assets[key]) || 0;
-
-                // skip empty assets (clean UI)
                 if (amount <= 0) return;
 
-                const price = prices[key] || 1;
-                const value = amount * price;
+                const value = amount * (prices[key] || 1);
 
                 total += value;
                 count++;
@@ -51,17 +62,12 @@ async function loadWallet() {
 
                 el.innerHTML = `
                     <div class="wallet-left">
-                        <img 
-                            src="${logos[key] || ''}" 
-                            alt="${key}" 
-                            onerror="this.style.display='none'"
-                        />
+                        <img src="${logos[key] || ''}" onerror="this.style.display='none'"/>
                         <div>
                             <h4>${key.toUpperCase()}</h4>
                             <small>${amount}</small>
                         </div>
                     </div>
-
                     <div class="wallet-right">
                         <strong>$${value.toFixed(2)}</strong>
                     </div>
@@ -71,94 +77,147 @@ async function loadWallet() {
             });
         }
 
-/* =========================
-   UPDATE TOTAL BALANCE (FIXED)
-========================= */
-if (typeof updateBalanceUI === "function") {
-    updateBalanceUI(total);
-}
-        /* =========================
-           UPDATE ASSET COUNT
-        ========================== */
-        const countEl = document.getElementById("assetCount");
+        currentTotal = total;
+        updateBalanceUI();
 
-        if (countEl) {
-            countEl.innerText = count;
-        }
+        if (countEl) countEl.innerText = count;
 
     } catch (err) {
         console.log("Wallet error:", err);
     }
 }
 
-/* LOAD */
-loadWallet();
+/* =========================
+   DEPOSIT ADDRESS (FIXED)
+========================= */
+async function loadDepositAddress() {
+    try {
+        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
+        const data = await res.json();
 
-// HAMBURGER TOGGLE
-const hamburger = document.getElementById("hamburger");
-const navLinks = document.getElementById("navLinks");
+        depositAddress = data.address || "";
 
-if (hamburger) {
-  hamburger.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
+        const el = document.getElementById("depositWalletAddress");
+        if (el) el.innerText = depositAddress || "No address set";
+
+    } catch (err) {
+        console.log("Deposit error:", err);
+    }
 }
 
-const toggleBtn = document.getElementById("toggleBalance");
-const totalEl = document.getElementById("walletTotal");
+/* =========================
+   COPY ADDRESS
+========================= */
+function copyDepositAddress() {
+    if (!depositAddress) {
+        showToast("No address available");
+        return;
+    }
 
-const eyeOpen = document.getElementById("eyeOpen");
-const eyeClosed = document.getElementById("eyeClosed");
-
-let hidden = localStorage.getItem("hideBalance") === "true";
-
-function updateBalanceUI(value) {
-  if (value !== undefined) {
-    currentTotal = value; // ✅ store latest real value
-  }
-
-  if (hidden) {
-    totalEl.innerText = "****";
-    eyeOpen.style.display = "none";
-    eyeClosed.style.display = "inline";
-  } else {
-    totalEl.innerText = "$" + currentTotal.toFixed(2); // ✅ use stored value
-    eyeOpen.style.display = "inline";
-    eyeClosed.style.display = "none";
-  }
+    navigator.clipboard.writeText(depositAddress);
+    showToast("Address copied");
 }
 
-toggleBtn.addEventListener("click", () => {
-  hidden = !hidden;
-  localStorage.setItem("hideBalance", hidden);
-  updateBalanceUI(); // ✅ now works because value is stored
-});
+/* =========================
+   BALANCE UI
+========================= */
+function updateBalanceUI() {
+    const totalEl = document.getElementById("walletTotal");
+    const eyeOpen = document.getElementById("eyeOpen");
+    const eyeClosed = document.getElementById("eyeClosed");
 
+    if (!totalEl) return;
+
+    if (hidden) {
+        totalEl.innerText = "****";
+        if (eyeOpen) eyeOpen.style.display = "none";
+        if (eyeClosed) eyeClosed.style.display = "inline";
+    } else {
+        totalEl.innerText = "$" + currentTotal.toFixed(2);
+        if (eyeOpen) eyeOpen.style.display = "inline";
+        if (eyeClosed) eyeClosed.style.display = "none";
+    }
+}
+
+/* =========================
+   TOGGLE BALANCE
+========================= */
+function setupToggleBalance() {
+    const toggleBtn = document.getElementById("toggleBalance");
+
+    if (!toggleBtn) return;
+
+    toggleBtn.addEventListener("click", () => {
+        hidden = !hidden;
+        localStorage.setItem("hideBalance", hidden);
+        updateBalanceUI();
+    });
+}
+
+/* =========================
+   HAMBURGER
+========================= */
+function setupHamburger() {
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("navLinks");
+
+    if (hamburger && navLinks) {
+        hamburger.addEventListener("click", () => {
+            navLinks.classList.toggle("active");
+        });
+    }
+}
+
+/* =========================
+   MODALS
+========================= */
 function openDeposit() {
-  document.getElementById("depositModal").style.display = "flex";
+    document.getElementById("depositModal").style.display = "flex";
+    loadDepositAddress();
 }
 
 function closeDeposit() {
-  document.getElementById("depositModal").style.display = "none";
+    document.getElementById("depositModal").style.display = "none";
 }
 
 function openWithdraw() {
-  document.getElementById("withdrawModal").style.display = "flex";
+    document.getElementById("withdrawModal").style.display = "flex";
 }
 
 function closeWithdraw() {
-  document.getElementById("withdrawModal").style.display = "none";
+    document.getElementById("withdrawModal").style.display = "none";
 }
 
-function submitDeposit() {
-  alert("Deposit request sent");
-  closeDeposit();
-}
-
+/* =========================
+   WITHDRAW MESSAGE (NEW REQUIREMENT)
+========================= */
 function submitWithdraw() {
-  alert("Withdrawal request submitted");
-  closeWithdraw();
+    showToast("Withdrawal period not elapsed, contact admin");
+    closeWithdraw();
 }
 
+/* =========================
+   TOAST
+========================= */
+function showToast(message) {
+    const toast = document.createElement("div");
+    toast.className = "toast";
+    toast.innerText = message;
 
-setInterval(loadPortfolio, 5000);
+    document.body.appendChild(toast);
+
+    setTimeout(() => toast.classList.add("show"), 100);
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
+/* =========================
+   LOGOUT
+========================= */
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}

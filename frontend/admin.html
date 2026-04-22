@@ -2,49 +2,176 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <style>
+       body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #0f172a, #020617);
+    color: white;
+}
+
+/* PAGE WRAPPER */
+.admin-container {
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+}
+
+/* HEADER */
+.admin-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.admin-header h2 {
+    color: #22c55e;
+}
+
+/* SECTION TITLE */
+.section-title {
+    margin: 20px 0 10px;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+/* CARD */
+.card {
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    padding: 20px;
+    border-radius: 14px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* GRID FIX */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* INPUT FIX */
+input, select {
+    width: 100%;
+    padding: 12px 14px;
+
+    border-radius: 10px;
+    border: 1px solid #334155;
+
+    background: #020617;
+    color: white;
+
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* BUTTON FIX */
+button {
+    width: 100%;
+    padding: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: #22c55e;
+    color: white;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background: #16a34a;
+    transform: scale(1.02);
+}
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
 </head>
 
 <body>
-    <h2>Admin Panel</h2>
 
-    <h3>Update Assets</h3>
-    <input id="btc" placeholder="Bitcoin" />
-    <input id="eth" placeholder="Ethereum" />
-    <input id="usdt" placeholder="USDT" />
-    <input id="sol" placeholder="Solana" />
+<div class="admin-container">
+
+    <div class="admin-header">
+        <h2>Crypto Save Admin Panel</h2>
+        <p>Manage assets, transactions & deposit address</p>
+    </div>
+
+    <!-- ASSETS -->
+    <div class="section-title">Update Assets</div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Bitcoin</h3>
+            <input id="btc" placeholder="BTC amount" />
+        </div>
+
+        <div class="card">
+            <h3>Ethereum</h3>
+            <input id="eth" placeholder="ETH amount" />
+        </div>
+
+        <div class="card">
+            <h3>USDT</h3>
+            <input id="usdt" placeholder="USDT amount" />
+        </div>
+
+        <div class="card">
+            <h3>Solana</h3>
+            <input id="sol" placeholder="SOL amount" />
+        </div>
+    </div>
 
     <button onclick="updateAssets()">Update Assets</button>
 
-    <hr>
+    <!-- TRANSACTIONS -->
+    <div class="section-title">Add Transaction</div>
 
-    <h3>Add Transaction</h3>
+    <div class="card">
+        <input id="date" type="date" />
+        <input id="type" placeholder="Type (Deposit, Interest, Withdrawal)" />
+        <input id="amount" placeholder="Amount" />
 
-    <input id="date" type="date" />
-    <input id="type" placeholder="Type (Deposit, Interest)" />
-    <input id="amount" placeholder="Amount" />
+        <select id="status">
+            <option>Completed</option>
+            <option>Pending</option>
+        </select>
 
-    <select id="status">
-        <option>Completed</option>
-        <option>Pending</option>
-    </select>
+        <button onclick="addTransaction()">Add Transaction</button>
+    </div>
 
+    <!-- DEPOSIT ADDRESS -->
+    <div class="section-title">Deposit Address</div>
 
-    <button onclick="addTransaction()">Add Transaction</button>
-
-    <div class="admin-box">
-
-        <h3>Deposit Address</h3>
-
+    <div class="card">
         <input type="text" id="depositAddressInput" placeholder="Enter wallet address" />
 
-      <button onclick="addDepositAddress()" class="admin-btn">
-  Update Address
-</button>
-
+        <button onclick="addDepositAddress()">
+            Update Address
+        </button>
     </div>
-    <script src="admin.js"></script>
-</body>
 
+</div>
+
+<script src="admin.js"></script>
+
+</body>
 </html>
