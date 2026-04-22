@@ -93,8 +93,24 @@
         <select id="withdrawCoin">
           <option value="bitcoin">Bitcoin (BTC)</option>
           <option value="ethereum">Ethereum (ETH)</option>
-          <option value="usdt">USDT</option>
+          <option value="usdt">Tether (USDT)</option>
+          <option value="usdc">USD Coin (USDC)</option>
+          <option value="binancecoin">BNB (BNB)</option>
           <option value="solana">Solana (SOL)</option>
+          <option value="xrp">XRP (XRP)</option>
+          <option value="cardano">Cardano (ADA)</option>
+          <option value="dogecoin">Dogecoin (DOGE)</option>
+          <option value="tron">TRON (TRX)</option>
+          <option value="polkadot">Polkadot (DOT)</option>
+          <option value="litecoin">Litecoin (LTC)</option>
+          <option value="chainlink">Chainlink (LINK)</option>
+          <option value="avalanche">Avalanche (AVAX)</option>
+          <option value="polygon">Polygon (MATIC)</option>
+          <option value="stellar">Stellar (XLM)</option>
+          <option value="cosmos">Cosmos (ATOM)</option>
+          <option value="monero">Monero (XMR)</option>
+          <option value="bitcoin-cash">Bitcoin Cash (BCH)</option>
+          <option value="aptos">Aptos (APT)</option>
         </select>
 
         <label>Wallet Address</label>
@@ -112,34 +128,29 @@
     </div>
   </div>
 
-<div id="depositModal" class="modal">
-  <div class="modal-box">
+  <div id="depositModal" class="modal">
+    <div class="modal-box">
 
-    <div class="modal-header">
-      <h3>Deposit</h3>
-      <span onclick="closeDeposit()">×</span>
-    </div>
+      <div class="modal-header">
+        <h3>Deposit</h3>
+        <span onclick="closeDeposit()">×</span>
+      </div>
 
-    <div class="modal-body">
-      <label>Deposit Address</label>
-      <p class="hint-text">Send funds only to this address</p>
+      <div class="modal-body">
+        <label>Deposit Address</label>
+        <p class="hint-text">Send funds only to this address</p>
 
-      <div class="address-row">
-        <input 
-          id="depositWalletAddress"
-          class="wallet-address-box"
-          readonly
-          value="Loading..."
-        />
+        <div class="address-row">
+          <input id="depositWalletAddress" class="wallet-address-box" readonly value="Loading..." />
 
-        <div class="copy-icon" onclick="copyDepositAddress()">
-          📋
+          <div class="copy-icon" onclick="copyDepositAddress()">
+            📋
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
-</div>
 
   <script src="wallet.js"></script>
 </body>
