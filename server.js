@@ -12,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
 
+
+
 /* =========================
    MONGODB
 ========================= */
@@ -25,7 +27,9 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB error:", err));
 
-/* =========================
+  
+
+  /* =========================
    DEPOSIT ADDRESS (SINGLE)
 ========================= */
 let depositAddress = "bc1qdefaultaddressxxxx";
@@ -33,10 +37,8 @@ let depositAddress = "bc1qdefaultaddressxxxx";
 /* =========================
    GET DEPOSIT ADDRESS
 ========================= */
-app.get("/api/deposit-addresses", (req, res) => {
-  res.json({
-    address: depositAddress
-  });
+app.get("/api/deposit-address", (req, res) => {
+  res.json({ address: depositAddress });
 });
 
 /* =========================
@@ -46,7 +48,7 @@ app.put("/api/admin/deposit-address", (req, res) => {
   const { address } = req.body;
 
   if (!address) {
-    return res.status(400).json({ error: "Missing address" });
+    return res.status(400).json({ error: "Address required" });
   }
 
   depositAddress = address;
@@ -56,6 +58,7 @@ app.put("/api/admin/deposit-address", (req, res) => {
     address
   });
 });
+
 /* =========================
    PORTFOLIO MODEL
 ========================= */

@@ -7,41 +7,6 @@ if (!localStorage.getItem("user")) {
 
 let depositAddress = "";
 
-/* LOAD ADDRESS */
-async function loadDepositAddress() {
-  try {
-    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
-    const data = await res.json();
-
-    depositAddress = data.address;
-
-    const el = document.getElementById("depositWalletAddress");
-    if (el) el.innerText = depositAddress;
-
-  } catch (err) {
-    console.log("Failed to load address", err);
-  }
-}
-
-/* COPY */
-function copyDepositAddress() {
-  if (!depositAddress) return;
-
-  navigator.clipboard.writeText(depositAddress);
-  showToast("Address copied");
-}
-
-async function loadDepositAddress() {
-  const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
-  const data = await res.json();
-
-  const el = document.getElementById("depositWalletAddress");
-
-  if (el) {
-    el.innerText = data.address || "No address set";
-  }
-}
-
 /* =========================
    STATE
 ========================= */
@@ -58,9 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setupGreeting();
     setupBalanceToggle();
     loadPortfolio();
-    loadDepositAddresses(); // 🔥 ADD THIS
 
     setInterval(loadPortfolio, 5000);
+
+    loadDepositAddress();
 });
 
 /* =========================
@@ -75,7 +41,6 @@ function setupGreeting() {
     const name = user.charAt(0).toUpperCase() + user.slice(1);
     el.innerHTML = `Welcome back, <strong>${name}</strong>`;
 }
-
 
 /* =========================
    PORTFOLIO LOADER
@@ -110,9 +75,6 @@ async function loadPortfolio() {
             solana: "https://assets.coingecko.com/coins/images/4128/large/solana.png"
         };
 
-        /* =========================
-           ASSETS
-        ========================== */
         if (data.assets) {
             for (let key in data.assets) {
                 const amount = data.assets[key];
@@ -140,18 +102,12 @@ async function loadPortfolio() {
             }
         }
 
-        /* =========================
-           TOTAL BALANCE
-        ========================== */
         if (hidden) {
             totalEl.innerText = "****";
         } else {
             animateValue(totalEl, total);
         }
 
-        /* =========================
-           TRANSACTIONS
-        ========================== */
         const recent = (data.transactions || []).reverse();
 
         recent.forEach(tx => {
@@ -177,9 +133,8 @@ async function loadPortfolio() {
     }
 }
 
-
 /* =========================
-   BALANCE TOGGLE (EYE)
+   BALANCE TOGGLE
 ========================= */
 function setupBalanceToggle() {
     const toggleBtn = document.getElementById("toggleBalance");
@@ -210,7 +165,6 @@ function setupBalanceToggle() {
     updateUI();
 }
 
-
 /* =========================
    ANIMATION
 ========================= */
@@ -237,79 +191,47 @@ function animateValue(el, newValue) {
     requestAnimationFrame(animate);
 }
 
-
 /* =========================
-   LOGOUT
-========================= */
-function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "index.html";
-}
-
-
-/* =========================
-   TOAST
-========================= */
-function showToast(message) {
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    toast.innerText = message;
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => toast.classList.add("show"), 100);
-
-    setTimeout(() => {
-        toast.classList.remove("show");
-        setTimeout(() => toast.remove(), 300);
-    }, 2000);
-}
-
-
-/* =========================
-   MODALS
+   MODALS (RESTORED)
 ========================= */
 function openDeposit() {
-    document.getElementById("depositModal").style.display = "flex";
+    const modal = document.getElementById("depositModal");
+    if (modal) modal.style.display = "flex";
 }
 
 function closeDeposit() {
-    document.getElementById("depositModal").style.display = "none";
+    const modal = document.getElementById("depositModal");
+    if (modal) modal.style.display = "none";
 }
 
 function openWithdraw() {
-    document.getElementById("withdrawModal").style.display = "flex";
+    const modal = document.getElementById("withdrawModal");
+    if (modal) modal.style.display = "flex";
 }
 
 function closeWithdraw() {
-    document.getElementById("withdrawModal").style.display = "none";
+    const modal = document.getElementById("withdrawModal");
+    if (modal) modal.style.display = "none";
 }
 
-function updateDepositAddress() {
-  const coin = document.getElementById("depositCoin").value;
+async function loadDepositAddress() {
+  try {
+    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+    const data = await res.json();
 
-  const el = document.getElementById("depositWalletAddress");
+    depositAddress = data.address;
 
-  if (!el) return;
+    const el = document.getElementById("depositWalletAddress");
+    if (el) el.innerText = depositAddress;
 
-  el.innerText = depositAddresses[coin] || "Address not available";
+  } catch (err) {
+    console.log("Failed to load address", err);
+  }
 }
 
 function copyDepositAddress() {
-  const el = document.getElementById("depositWalletAddress");
+  if (!depositAddress) return;
 
-  if (!el) return;
-
-  navigator.clipboard.writeText(el.innerText);
-
+  navigator.clipboard.writeText(depositAddress);
   showToast("Address copied");
-}
-
-const hamburger = document.getElementById("hamburger");
-const navLinks = document.getElementById("navLinks");
-
-if (hamburger && navLinks) {
-  hamburger.addEventListener("click", () => {
-    navLinks.classList.toggle("active");
-  });
 }
