@@ -46,7 +46,7 @@
     border: 1px solid #1f2937;
     padding: 20px;
     border-radius: 14px;
-
+   overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -63,7 +63,7 @@
 input, select {
     width: 100%;
     padding: 12px 14px;
-
+    max-width: 100%;
     border-radius: 10px;
     border: 1px solid #334155;
 
@@ -97,12 +97,29 @@ button:hover {
     transform: scale(1.02);
 }
 
+/* FIX DATE INPUT SPECIFICALLY */
+input[type="date"] {
+    width: 100%;
+    min-width: 0;
+}
+
+
 /* MOBILE FIX */
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: 1fr;
     }
+
+       .card {
+        padding: 15px;
+    }
+
+    input, select {
+        font-size: 14px;
+    }
 }
+
+
     </style>
 </head>
 
