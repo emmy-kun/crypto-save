@@ -1032,3 +1032,45 @@ html, body {
     background: #334155;
     transform: scale(1.05);
 }
+
+/* =========================
+   MOBILE MENU (PROFESSIONAL)
+========================= */
+
+.mobile-menu {
+  display: none;
+  position: absolute;
+  top: 70px;
+  right: 15px;
+
+  background: #0f172a;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+
+  padding: 10px;
+  width: 200px;
+
+  flex-direction: column;
+  gap: 8px;
+
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+.mobile-menu a {
+  text-decoration: none;
+  color: #94a3b8;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.mobile-menu a:hover {
+  background: #1e293b;
+  color: white;
+}
+
+/* SHOW MENU */
+.mobile-menu.active {
+  display: flex;
+}

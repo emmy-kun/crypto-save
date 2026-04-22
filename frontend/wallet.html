@@ -4,9 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Wallet - Crypto Save</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -80,34 +78,7 @@
 
   </div>
 
-  <!-- =========================
-       DEPOSIT MODAL (FIXED)
-  ========================== -->
-  <div id="depositModal" class="modal">
-    <div class="modal-box">
-
-      <div class="modal-header">
-        <h3>Deposit</h3>
-        <span onclick="closeDeposit()">×</span>
-      </div>
-
-      <div class="modal-body">
-<label>Deposit Address</label>
-<p class="hint-text">Send funds only to this address</p>
-
-<div class="address-box">
-  <p id="depositWalletAddress">Loading address...</p>
-<button class="copy-icon" onclick="copyDepositAddress()">
-</div>
-
-      </div>
-
-    </div>
-  </div>
-
-  <!-- =========================
-       WITHDRAW MODAL
-  ========================== -->
+  <!-- WITHDRAW MODAL -->
   <div id="withdrawModal" class="modal">
     <div class="modal-box">
 
@@ -140,6 +111,35 @@
 
     </div>
   </div>
+
+<div id="depositModal" class="modal">
+  <div class="modal-box">
+
+    <div class="modal-header">
+      <h3>Deposit</h3>
+      <span onclick="closeDeposit()">×</span>
+    </div>
+
+    <div class="modal-body">
+      <label>Deposit Address</label>
+      <p class="hint-text">Send funds only to this address</p>
+
+      <div class="address-row">
+        <input 
+          id="depositWalletAddress"
+          class="wallet-address-box"
+          readonly
+          value="Loading..."
+        />
+
+        <div class="copy-icon" onclick="copyDepositAddress()">
+          📋
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
   <script src="wallet.js"></script>
 </body>

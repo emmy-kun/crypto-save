@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (nav) nav.classList.add("nav-active");
 
     loadWallet();
-    loadDepositAddress();
     setupHamburger();
     setupToggleBalance();
 });
@@ -88,17 +87,21 @@ async function loadWallet() {
 }
 
 /* =========================
-   DEPOSIT ADDRESS (FIXED)
+   LOAD DEPOSIT ADDRESS (FIXED)
 ========================= */
 async function loadDepositAddress() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
+        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+
         const data = await res.json();
 
         depositAddress = data.address || "";
 
         const el = document.getElementById("depositWalletAddress");
-        if (el) el.innerText = depositAddress || "No address set";
+
+        if (el) {
+            el.value = depositAddress || "No address set";
+        }
 
     } catch (err) {
         console.log("Deposit error:", err);
@@ -173,7 +176,7 @@ function setupHamburger() {
 ========================= */
 function openDeposit() {
     document.getElementById("depositModal").style.display = "flex";
-    loadDepositAddress();
+    loadDepositAddress(); // 🔥 LOAD HERE
 }
 
 function closeDeposit() {
@@ -189,7 +192,7 @@ function closeWithdraw() {
 }
 
 /* =========================
-   WITHDRAW MESSAGE (NEW REQUIREMENT)
+   WITHDRAW MESSAGE
 ========================= */
 function submitWithdraw() {
     showToast("Withdrawal period not elapsed, contact admin");
