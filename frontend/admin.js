@@ -164,22 +164,20 @@ app.listen(PORT, () => {
 });
 
 async function addDepositAddress() {
-  const address = document.getElementById("depositAddressInput").value;
+  const address = document.getElementById("depositAddressInput").value.trim();
 
   if (!address) return alert("Enter address");
 
-  const res = await fetch("https://crypto-save-production.up.railway.app/api/admin/deposit-address", {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      coin: "bitcoin",   // temporary (since you're removing coins later)
-      address
-    })
-  });
+  const res = await fetch(
+    "https://crypto-save-production.up.railway.app/api/admin/deposit-address",
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ address })
+    }
+  );
 
   const data = await res.json();
 
-  alert(data.message);
+  alert(data.message || "Updated successfully");
 }

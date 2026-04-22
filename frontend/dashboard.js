@@ -5,50 +5,40 @@ if (!localStorage.getItem("user")) {
     window.location.href = "index.html";
 }
 
-let depositAddresses = {};
+let depositAddress = "";
 
-/* =========================
-   LOAD DEPOSIT ADDRESSES
-========================= */
-async function loadDepositAddresses() {
+/* LOAD ADDRESS */
+async function loadDepositAddress() {
   try {
-    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
-    depositAddresses = await res.json();
+    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+    const data = await res.json();
+
+    depositAddress = data.address;
+
+    const el = document.getElementById("depositWalletAddress");
+    if (el) el.innerText = depositAddress;
+
   } catch (err) {
-    console.log("Failed to load deposit addresses", err);
+    console.log("Failed to load address", err);
   }
 }
 
-/* =========================
-   UPDATE ADDRESS DISPLAY
-========================= */
-function updateDepositAddress() {
-  const coin = document.getElementById("depositCoin")?.value;
-  const el = document.getElementById("depositWalletAddress");
-
-  if (!el) return;
-
-  el.innerText = depositAddresses[coin] || "Address not available";
-}
-
-/* =========================
-   COPY ADDRESS (PROFESSIONAL)
-========================= */
+/* COPY */
 function copyDepositAddress() {
-  const el = document.getElementById("depositWalletAddress");
+  if (!depositAddress) return;
 
-  if (!el) return;
-
-  navigator.clipboard.writeText(el.innerText);
+  navigator.clipboard.writeText(depositAddress);
   showToast("Address copied");
 }
 
-async function loadDepositAddresses() {
-  try {
-    const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
-    depositAddresses = await res.json();
-  } catch (err) {
-    console.log("Failed to load deposit addresses", err);
+async function loadDepositAddress() {
+  const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-addresses");
+  const data = await res.json();
+
+  const el = document.getElementById("depositWalletAddress");
+
+  if (el) {
+    el.innerText = data.address || "No address set";
   }
 }
 

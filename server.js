@@ -33,8 +33,10 @@ let depositAddress = "bc1qdefaultaddressxxxx";
 /* =========================
    GET DEPOSIT ADDRESS
 ========================= */
-app.get("/api/deposit-address", (req, res) => {
-  res.json({ address: depositAddress });
+app.get("/api/deposit-addresses", (req, res) => {
+  res.json({
+    address: depositAddress
+  });
 });
 
 /* =========================
@@ -50,7 +52,8 @@ app.put("/api/admin/deposit-address", (req, res) => {
   depositAddress = address;
 
   res.json({
-    message: "Deposit address updated successfully"
+    message: "Deposit address updated successfully",
+    address
   });
 });
 /* =========================
