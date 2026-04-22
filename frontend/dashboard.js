@@ -282,10 +282,12 @@ function showToast(message) {
     }, 2000);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
+function logout() {
+    // clear any saved session data
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("hideBalance");
 
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", logout);
-    }
-});
+    // redirect to login page
+    window.location.href = "index.html";
+}
