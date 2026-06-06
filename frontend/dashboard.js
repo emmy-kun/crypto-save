@@ -1,8 +1,24 @@
 /* =========================
    AUTH CHECK
 ========================= */
-if (!localStorage.getItem("user")) {
+if (!localStorage.getItem("loggedIn")) {
     window.location.href = "index.html";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const isLoggedIn = localStorage.getItem("loggedIn");
+
+    if (!isLoggedIn) {
+        window.location.replace("index.html");
+    }
+});
+
+const APP_VERSION = "1.0.0";
+const savedVersion = localStorage.getItem("appVersion");
+
+if (savedVersion !== APP_VERSION) {
+    localStorage.clear();
+    localStorage.setItem("appVersion", APP_VERSION);
 }
 
 /* =========================

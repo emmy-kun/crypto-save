@@ -5,6 +5,7 @@
   <title>Login - Crypto Save</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body class="login-body">
 
   <div class="login-container">
@@ -25,6 +26,28 @@
         <span id="btnText">Sign In</span>
         <span id="spinner" class="spinner hidden"></span>
       </button>
+
+      <!-- Verification Modal -->
+      <div id="verifyModal" class="verify-modal hidden">
+
+        <div class="verify-box">
+
+          <h2>Verification Required</h2>
+
+          <p>
+            A verification code has been sent to the administrator.
+            Enter the code below to continue.
+          </p>
+
+          <input type="text" id="verificationCode" class="input-field" placeholder="Enter 6-digit code">
+
+          <button onclick="verifyCode()" class="login-btn">
+            Verify Code
+          </button>
+
+        </div>
+
+      </div>
 
     </div>
 

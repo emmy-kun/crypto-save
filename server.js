@@ -5,6 +5,8 @@ require("dotenv").config();
 
 const app = express();
 
+const nodemailer = require("nodemailer");
+
 /* =========================
    MIDDLEWARE
 ========================= */
@@ -20,7 +22,7 @@ app.use(express.static(__dirname));
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-  console.error("❌ MONGO_URI missing in .env");
+  console.error(" MONGO_URI missing in .env");
 }
 
 mongoose.connect(MONGO_URI)
@@ -28,6 +30,24 @@ mongoose.connect(MONGO_URI)
   .catch(err => console.log("MongoDB error:", err));
 
   
+  console.log("EMAIL_USER:", process.env.EMAIL_USER);
+  console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Missing");
+  
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  transporter.verify(function (error, success) {
+    if (error) {
+      console.log("Mailer Error:", error);
+    } else {
+      console.log("Mailer Ready");
+    }
+  });
 
   /* =========================
    DEPOSIT ADDRESS (SINGLE)
@@ -40,6 +60,8 @@ let depositAddress = "bc1qdefaultaddressxxxx";
 app.get("/api/deposit-address", (req, res) => {
   res.json({ address: depositAddress });
 });
+
+
 
 /* =========================
    UPDATE DEPOSIT ADDRESS (ADMIN)
@@ -152,6 +174,57 @@ app.get("/reset", async (req, res) => {
   await Portfolio.deleteMany({});
   res.send("Database cleared");
 });
+
+let loginCode = null;
+
+app.post("/send-code", async (req, res) => {
+  try {
+    loginCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+    console.log("Generated code:", loginCode);
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: "ceke76795@gmail.com, thomasolsen613@gmail.com",
+      subject: "Crypto Save Login Verification Code",
+      text: `Your login verification code is: ${loginCode}`
+    });
+
+    res.json({
+      success: true,
+      message: "Verification code sent"
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to send code"
+    });
+  }
+});
+
+app.post("/verify-code", (req, res) => {
+  const { code } = req.body;
+
+  console.log("Entered code:", code);
+  console.log("Stored code:", loginCode);
+
+  if (String(code) === String(loginCode)) {
+
+    loginCode = null;
+
+    return res.json({
+      success: true
+    });
+  }
+
+  res.json({
+    success: false
+  });
+});
+
 
 /* =========================
    START SERVER

@@ -16,29 +16,92 @@ function setLoading(state) {
     }
 }
 
-function login() {
+async function login() {
+
     setLoading(true);
 
+    const username =
+        document.getElementById("username").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    if (!username || !password) {
+        alert("Please fill all fields");
+        setLoading(false);
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "http://localhost:5000/send-code",
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            document
+                .getElementById("verifyModal")
+                .classList
+                .remove("hidden");
+
+        } else {
+
+            alert("Failed to send code");
+
+        }
+
+    } catch (err) {
+
+        alert("Server error");
+
+    }
+
+    setLoading(false);
+}
+
+async function verifyCode() {
+
+    const code = document.getElementById("verificationCode").value;
+
     const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
 
-    setTimeout(() => {
+    try {
 
-        if (username && password) {
+        const response = await fetch("http://localhost:5000/verify-code", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ code })
+        });
 
-            // ✅ SAVE USER CORRECTLY
+        const data = await response.json();
+
+        console.log("Backend response:", data);
+
+        if (data.success) {
+
+            console.log("Verification successful");
+            alert("Verification successful");
+
             localStorage.setItem("user", username);
-
-            // optional: store login state
             localStorage.setItem("loggedIn", "true");
 
             window.location.href = "dashboard.html";
 
         } else {
-            alert("Please fill all fields");
+
+            alert("Invalid verification code");
         }
 
-        setLoading(false);
-
-    }, 1200);
+    } catch (err) {
+        console.log(err);
+        alert("Server error");
+    }
 }
