@@ -2,10 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 const app = express();
 
 const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
 
 /* =========================
    MIDDLEWARE
@@ -183,27 +184,42 @@ app.post("/send-code", async (req, res) => {
 
     console.log("Generated code:", loginCode);
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "ceke76795@gmail.com, thomasolsen613@gmail.com",
-      subject: "Crypto Save Login Verification Code",
-      text: `Your login verification code is: ${loginCode}`
-    });
+    try {
+      await resend.emails.send({
+        from: "onboarding@resend.dev",
+        to: [
+          "ceke76795@gmail.com",
+          "thomasolsen613@gmail.com"
+        ],
+        subject: "Crypto Save Login Verification Code",
+        html: `
+          <h2>Crypto Save Verification Code</h2>
+          <p>Your login code is:</p>
+          <h1>${loginCode}</h1>
+        `
+      });
+
+    } catch (err) {
+
+      console.log("Email failed but code generated:", err.message);
+
+    }
 
     res.json({
       success: true,
-      message: "Verification code sent"
+      message: "Verification code generated"
     });
 
-  } catch (err) {
-    console.error(err);
+    } catch (err) {
 
-    res.status(500).json({
-      success: false,
-      message: "Failed to send code"
+      console.error(err);
+
+      res.status(500).json({
+        success: false,
+        message: "Failed to generate code"
+      });
+    }
     });
-  }
-});
 
 app.post("/verify-code", (req, res) => {
   const { code } = req.body;
