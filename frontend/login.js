@@ -35,7 +35,7 @@ async function login() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/send-code",
+            "https://crypto-save-production.up.railway.app/send-code",
             {
                 method: "POST"
             }
@@ -73,13 +73,16 @@ async function verifyCode() {
 
     try {
 
-        const response = await fetch("http://localhost:5000/verify-code", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ code })
-        });
+        const response = await fetch(
+            "https://crypto-save-production.up.railway.app/verify-code",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ code })
+            }
+        );
 
         const data = await response.json();
 
