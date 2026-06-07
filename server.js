@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
-const nodemailer = require("nodemailer");
 const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -31,26 +30,6 @@ if (!MONGO_URI) {
 mongoose.connect(MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB error:", err));
-
-
-console.log("EMAIL_USER:", process.env.EMAIL_USER);
-console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Missing");
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-transporter.verify(function (error, success) {
-  if (error) {
-    console.log("Mailer Error:", error);
-  } else {
-    console.log("Mailer Ready");
-  }
-});
 
 /* =========================
  DEPOSIT ADDRESS (SINGLE)
@@ -190,8 +169,7 @@ app.post("/send-code", async (req, res) => {
     const result = await resend.emails.send({
       from: "onboarding@resend.dev",
       to: [
-        "ceke76795@gmail.com",
-        "thomasolsen613@gmail.com"
+        "ceke76795@gmail.com"
       ],
       subject: "Crypto Save Login Verification Code",
       html: `
