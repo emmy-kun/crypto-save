@@ -169,7 +169,7 @@ app.post("/send-code", async (req, res) => {
     const result = await resend.emails.send({
       from: "onboarding@resend.dev",
       to: [
-        "ceke76795@gmail.com"
+        "thomasolsen613@gmail.com"
       ],
       subject: "Crypto Save Login Verification Code",
       html: `
