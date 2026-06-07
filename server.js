@@ -32,28 +32,28 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB error:", err));
 
-  
-  console.log("EMAIL_USER:", process.env.EMAIL_USER);
-  console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Missing");
-  
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
-  });
 
-  transporter.verify(function (error, success) {
-    if (error) {
-      console.log("Mailer Error:", error);
-    } else {
-      console.log("Mailer Ready");
-    }
-  });
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "Loaded" : "Missing");
 
-  /* =========================
-   DEPOSIT ADDRESS (SINGLE)
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
+
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("Mailer Error:", error);
+  } else {
+    console.log("Mailer Ready");
+  }
+});
+
+/* =========================
+ DEPOSIT ADDRESS (SINGLE)
 ========================= */
 let depositAddress = "bc1qdefaultaddressxxxx";
 
@@ -185,43 +185,38 @@ app.post("/send-code", async (req, res) => {
     loginCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     console.log("Generated code:", loginCode);
+    console.log("RESEND KEY EXISTS:", !!process.env.RESEND_API_KEY);
 
-    try {
-      await resend.emails.send({
-        from: "onboarding@resend.dev",
-        to: [
-          "ceke76795@gmail.com",
-          "thomasolsen613@gmail.com"
-        ],
-        subject: "Crypto Save Login Verification Code",
-        html: `
-          <h2>Crypto Save Verification Code</h2>
-          <p>Your login code is:</p>
-          <h1>${loginCode}</h1>
-        `
-      });
+    const result = await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: [
+        "ceke76795@gmail.com",
+        "thomasolsen613@gmail.com"
+      ],
+      subject: "Crypto Save Login Verification Code",
+      html: `
+        <h2>Crypto Save Verification Code</h2>
+        <p>Your login code is:</p>
+        <h1>${loginCode}</h1>
+      `
+    });
 
-    } catch (err) {
+    console.log("RESEND RESPONSE:", result);
 
-      console.log("Email failed but code generated:", err.message);
-
-    }
-
-    res.json({
+    return res.json({
       success: true,
       message: "Verification code generated"
     });
 
-    } catch (err) {
+  } catch (err) {
+    console.log("Email failed but code generated:", err.message);
 
-      console.error(err);
-
-      res.status(500).json({
-        success: false,
-        message: "Failed to generate code"
-      });
-    }
+    return res.json({
+      success: true,
+      message: "Verification code generated (email failed)"
     });
+  }
+});
 
 app.post("/verify-code", (req, res) => {
   const { code } = req.body;
