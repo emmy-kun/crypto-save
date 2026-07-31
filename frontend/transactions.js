@@ -1,7 +1,17 @@
+/* =========================
+   AUTH CHECK
+========================= */
+if (!localStorage.getItem("loggedIn")) {
+    window.location.href = "index.html";
+}
+
 document.getElementById("nav-transactions").classList.add("nav-active");
 
 async function loadTransactions() {
-    const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
+    const username = localStorage.getItem("user");
+    if (!username) return;
+
+    const res = await fetch(`https://crypto-save-production.up.railway.app/portfolio/${encodeURIComponent(username)}`);
     const data = await res.json();
 
     const table = document.getElementById("allTransactions");
@@ -52,4 +62,11 @@ if (hamburger) {
   hamburger.addEventListener("click", () => {
     navLinks.classList.toggle("active");
   });
+}
+
+function logout() {
+    localStorage.removeItem("user");
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("hideBalance");
+    window.location.href = "index.html";
 }

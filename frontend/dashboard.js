@@ -71,7 +71,10 @@ function setupGreeting() {
 ========================= */
 async function loadPortfolio() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
+        const username = localStorage.getItem("user");
+        if (!username) return;
+
+        const res = await fetch(`https://crypto-save-production.up.railway.app/portfolio/${encodeURIComponent(username)}`);
         const data = await res.json();
 
         const assetsDiv = document.getElementById("assets");
@@ -257,7 +260,10 @@ function closeWithdraw() {
 ========================= */
 async function loadDepositAddress() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+        const username = localStorage.getItem("user");
+        if (!username) return;
+
+        const res = await fetch(`https://crypto-save-production.up.railway.app/api/deposit-address/${encodeURIComponent(username)}`);
         const data = await res.json();
 
         depositAddress = data.address || "";
@@ -301,6 +307,7 @@ function showToast(message) {
 function logout() {
     // clear any saved session data
     localStorage.removeItem("user");
+    localStorage.removeItem("loggedIn");
     localStorage.removeItem("token");
     localStorage.removeItem("hideBalance");
 

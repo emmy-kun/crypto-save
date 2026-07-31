@@ -35,9 +35,13 @@ async function login() {
     try {
 
         const response = await fetch(
-            "https://crypto-save-production.up.railway.app/send-code",
+            "https://crypto-save-production.up.railway.app/login",
             {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
             }
         );
 
@@ -52,7 +56,7 @@ async function login() {
 
         } else {
 
-            alert("Failed to send code");
+            alert(data.message || "Failed to send code");
 
         }
 
@@ -80,7 +84,7 @@ async function verifyCode() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ code })
+                body: JSON.stringify({ username, code })
             }
         );
 

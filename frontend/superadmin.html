@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Superadmin Panel</title>
 
     <link rel="stylesheet" href="style.css">
 
@@ -103,6 +103,14 @@ input[type="date"] {
     min-width: 0;
 }
 
+.hidden {
+    display: none !important;
+}
+
+.small-text {
+    font-size: 12px;
+    color: #94a3b8;
+}
 
 /* MOBILE FIX */
 @media (max-width: 768px) {
@@ -125,35 +133,57 @@ input[type="date"] {
 
 <body>
 
-<div class="admin-container">
+<!-- LOGIN GATE -->
+<div class="admin-container" id="loginGate">
+    <div class="admin-header">
+        <h2>Superadmin Login</h2>
+    </div>
+
+    <div class="card">
+        <input type="password" id="superadminPassword" placeholder="Superadmin password" />
+        <button onclick="superadminLogin()">Login</button>
+    </div>
+</div>
+
+<!-- PANEL (hidden until authenticated) -->
+<div class="admin-container hidden" id="panel">
 
     <div class="admin-header">
-        <h2>Crypto Save Admin Panel</h2>
-        <p>Manage assets, transactions & deposit address</p>
+        <h2>Crypto Save Superadmin</h2>
+        <p>Pick a dummy account, then manage its assets, transactions & deposit address</p>
+    </div>
+
+    <div class="section-title">Select Account</div>
+
+    <div class="card">
+        <select id="userSelect" onchange="loadSelectedUser()">
+            <option value="">-- Choose a user --</option>
+        </select>
+        <p class="small-text" id="selectedUserInfo"></p>
     </div>
 
     <!-- ASSETS -->
-    <div class="section-title">Update Assets</div>
+    <div class="section-title">Update Assets (adds to current amount)</div>
 
     <div class="grid">
         <div class="card">
             <h3>Bitcoin</h3>
-            <input id="btc" placeholder="BTC amount" />
+            <input id="btc" placeholder="BTC amount to add" />
         </div>
 
         <div class="card">
             <h3>Ethereum</h3>
-            <input id="eth" placeholder="ETH amount" />
+            <input id="eth" placeholder="ETH amount to add" />
         </div>
 
         <div class="card">
             <h3>USDT</h3>
-            <input id="usdt" placeholder="USDT amount" />
+            <input id="usdt" placeholder="USDT amount to add" />
         </div>
 
         <div class="card">
             <h3>Solana</h3>
-            <input id="sol" placeholder="SOL amount" />
+            <input id="sol" placeholder="SOL amount to add" />
         </div>
     </div>
 
@@ -188,7 +218,7 @@ input[type="date"] {
 
 </div>
 
-<script src="admin.js"></script>
+<script src="superadmin.js"></script>
 
 </body>
 </html>

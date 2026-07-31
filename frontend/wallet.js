@@ -1,3 +1,10 @@
+/* =========================
+   AUTH CHECK
+========================= */
+if (!localStorage.getItem("loggedIn")) {
+    window.location.href = "index.html";
+}
+
 let currentTotal = 0;
 let depositAddress = "";
 let hidden = localStorage.getItem("hideBalance") === "true";
@@ -19,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
 ========================= */
 async function loadWallet() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app/portfolio");
+        const username = localStorage.getItem("user");
+        if (!username) return;
+
+        const res = await fetch(`https://crypto-save-production.up.railway.app/portfolio/${encodeURIComponent(username)}`);
         const data = await res.json();
 
         const assetsDiv = document.getElementById("walletAssets");
@@ -91,7 +101,10 @@ async function loadWallet() {
 ========================= */
 async function loadDepositAddress() {
     try {
-        const res = await fetch("https://crypto-save-production.up.railway.app/api/deposit-address");
+        const username = localStorage.getItem("user");
+        if (!username) return;
+
+        const res = await fetch(`https://crypto-save-production.up.railway.app/api/deposit-address/${encodeURIComponent(username)}`);
 
         const data = await res.json();
 
@@ -222,5 +235,7 @@ function showToast(message) {
 ========================= */
 function logout() {
     localStorage.removeItem("user");
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("hideBalance");
     window.location.href = "index.html";
 }
