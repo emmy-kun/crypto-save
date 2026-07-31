@@ -458,6 +458,22 @@
             margin-bottom: 14px;
         }
 
+        .sa-field-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        @media (max-width: 700px) {
+            .sa-field-grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .sa-field-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .sa-field label {
             display: block;
             font-size: 11px;
@@ -747,7 +763,7 @@
                         Add Transaction
                     </h4>
 
-                    <div class="sa-field-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div class="sa-field-grid sa-field-grid-4">
                         <div class="sa-field">
                             <label>Date</label>
                             <input id="date" type="date" />
