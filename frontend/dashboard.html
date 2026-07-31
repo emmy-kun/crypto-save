@@ -29,9 +29,15 @@
 
     <div class="nav-right">
       <div class="user" onclick="logout()">Logout</div>
-      <div class="hamburger" id="hamburger">☰</div>
+      <div class="hamburger" id="hamburger" aria-label="Menu" role="button">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
     </div>
   </div>
+
+  <div class="nav-backdrop" id="navBackdrop"></div>
 
   <!-- MAIN LAYOUT -->
   <div class="container">

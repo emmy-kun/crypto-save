@@ -17,8 +17,14 @@ const APP_VERSION = "1.0.0";
 const savedVersion = localStorage.getItem("appVersion");
 
 if (savedVersion !== APP_VERSION) {
+    const user = localStorage.getItem("user");
+    const loggedIn = localStorage.getItem("loggedIn");
+
     localStorage.clear();
     localStorage.setItem("appVersion", APP_VERSION);
+
+    if (user) localStorage.setItem("user", user);
+    if (loggedIn) localStorage.setItem("loggedIn", loggedIn);
 }
 
 /* =========================
@@ -42,16 +48,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setInterval(loadPortfolio, 5000);
 
-    // hamburger
+    setupHamburger();
+});
+
+/* =========================
+   HAMBURGER MENU
+========================= */
+function setupHamburger() {
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("navLinks");
+    const backdrop = document.getElementById("navBackdrop");
 
-    if (hamburger && navLinks) {
-        hamburger.addEventListener("click", () => {
-            navLinks.classList.toggle("active");
-        });
+    if (!hamburger || !navLinks) return;
+
+    function closeMenu() {
+        navLinks.classList.remove("active");
+        hamburger.classList.remove("open");
+        if (backdrop) backdrop.classList.remove("active");
     }
-});
+
+    function toggleMenu() {
+        const isOpen = navLinks.classList.toggle("active");
+        hamburger.classList.toggle("open", isOpen);
+        if (backdrop) backdrop.classList.toggle("active", isOpen);
+    }
+
+    hamburger.addEventListener("click", toggleMenu);
+    if (backdrop) backdrop.addEventListener("click", closeMenu);
+
+    navLinks.querySelectorAll(".nav-link").forEach(link => {
+        link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeMenu();
+    });
+}
 
 /* =========================
    GREETING

@@ -4,221 +4,755 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Superadmin Panel</title>
+    <title>Superadmin - Crypto Save</title>
 
     <link rel="stylesheet" href="style.css">
 
     <style>
-       body {
-    margin: 0;
-    font-family: Arial;
-    background: linear-gradient(135deg, #0f172a, #020617);
-    color: white;
-}
+        :root {
+            --bg: #020617;
+            --panel: #0f172a;
+            --panel-2: #111c33;
+            --border: #1f2937;
+            --border-soft: #1e293b;
+            --text: #e2e8f0;
+            --muted: #94a3b8;
+            --accent: #22c55e;
+            --accent-dark: #16a34a;
+            --danger: #ef4444;
+            --warn: #eab308;
+        }
 
-/* PAGE WRAPPER */
-.admin-container {
-    max-width: 900px;
-    margin: auto;
-    padding: 30px;
-}
+        * {
+            box-sizing: border-box;
+        }
 
-/* HEADER */
-.admin-header {
-    text-align: center;
-    margin-bottom: 25px;
-}
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Arial, sans-serif;
+            background: radial-gradient(circle at top, #0b1120, var(--bg) 60%);
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-.admin-header h2 {
-    color: #22c55e;
-}
+        a {
+            color: var(--accent);
+        }
 
-/* SECTION TITLE */
-.section-title {
-    margin: 20px 0 10px;
-    font-size: 13px;
-    color: #94a3b8;
-}
+        /* =========================
+           TOP BAR
+        ========================= */
+        .sa-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 28px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
 
-/* CARD */
-.card {
-    background: #0f172a;
-    border: 1px solid #1f2937;
-    padding: 20px;
-    border-radius: 14px;
-   overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
+        .sa-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-/* GRID FIX */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
+        .sa-brand img {
+            height: 32px;
+        }
 
-/* INPUT FIX */
-input, select {
-    width: 100%;
-    padding: 12px 14px;
-    max-width: 100%;
-    border-radius: 10px;
-    border: 1px solid #334155;
+        .sa-brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
 
-    background: #020617;
-    color: white;
+        .sa-brand-text strong {
+            font-size: 15px;
+        }
 
-    font-size: 14px;
-    outline: none;
-    box-sizing: border-box;
-}
+        .sa-brand-text span {
+            font-size: 12px;
+            color: var(--muted);
+        }
 
-/* BUTTON FIX */
-button {
-    width: 100%;
-    padding: 12px;
+        .sa-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--accent);
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            padding: 5px 10px;
+            border-radius: 999px;
+        }
 
-    border: none;
-    border-radius: 10px;
+        .sa-badge::before {
+            content: "";
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
 
-    background: #22c55e;
-    color: white;
+        .sa-logout-btn {
+            width: auto;
+            padding: 9px 16px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+        }
 
-    font-weight: bold;
-    cursor: pointer;
+        .sa-logout-btn:hover {
+            background: var(--panel-2);
+            color: var(--text);
+            transform: none;
+        }
 
-    transition: 0.2s ease;
-}
+        /* =========================
+           LOGIN GATE
+        ========================= */
+        .sa-login-wrap {
+            min-height: calc(100vh - 65px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-button:hover {
-    background: #16a34a;
-    transform: scale(1.02);
-}
+        .sa-login-card {
+            width: 100%;
+            max-width: 380px;
+            background: linear-gradient(160deg, var(--panel), #08101f);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 36px 30px;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+        }
 
-/* FIX DATE INPUT SPECIFICALLY */
-input[type="date"] {
-    width: 100%;
-    min-width: 0;
-}
+        .sa-login-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+        }
 
-.hidden {
-    display: none !important;
-}
+        .sa-login-card h2 {
+            margin: 0 0 6px;
+            font-size: 20px;
+        }
 
-.small-text {
-    font-size: 12px;
-    color: #94a3b8;
-}
+        .sa-login-card p {
+            margin: 0 0 22px;
+            color: var(--muted);
+            font-size: 13px;
+        }
 
-/* MOBILE FIX */
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+        .sa-error-text {
+            color: var(--danger);
+            font-size: 13px;
+            margin-top: 10px;
+            min-height: 16px;
+        }
 
-       .card {
-        padding: 15px;
-    }
+        /* =========================
+           LAYOUT
+        ========================= */
+        .sa-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            padding: 20px 28px 40px;
+            max-width: 1280px;
+            margin: 0 auto;
+            align-items: start;
+        }
 
-    input, select {
-        font-size: 14px;
-    }
-}
+        @media (max-width: 900px) {
+            .sa-layout {
+                grid-template-columns: 1fr;
+            }
+        }
 
+        /* =========================
+           SIDEBAR / USER LIST
+        ========================= */
+        .sa-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+        }
 
+        .sa-panel-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--muted);
+            margin: 0 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sa-panel-title .count {
+            background: var(--panel-2);
+            color: var(--muted);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 999px;
+            text-transform: none;
+            letter-spacing: 0;
+        }
+
+        .sa-search {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .sa-search:focus {
+            border-color: var(--accent);
+        }
+
+        .sa-user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 420px;
+            overflow-y: auto;
+        }
+
+        .sa-user-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.15s ease;
+        }
+
+        .sa-user-row:hover {
+            background: var(--panel-2);
+        }
+
+        .sa-user-row.active {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+
+        .sa-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--panel-2);
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sa-user-row.active .sa-avatar {
+            background: var(--accent);
+            color: #04150a;
+        }
+
+        .sa-user-name {
+            font-size: 13px;
+            font-weight: 600;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .sa-empty-state {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+        .sa-main {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .sa-selected-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px 20px;
+        }
+
+        .sa-selected-header h3 {
+            margin: 0 0 4px;
+            font-size: 17px;
+        }
+
+        .sa-selected-header p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .sa-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .sa-stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .sa-stat-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+
+        .sa-stat-card .label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+        }
+
+        .sa-stat-card .value {
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 6px;
+            color: var(--accent);
+        }
+
+        .sa-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        @media (max-width: 700px) {
+            .sa-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .sa-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .sa-card h4 {
+            margin: 0 0 14px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sa-card h4 .icon {
+            width: 20px;
+            height: 20px;
+            color: var(--accent);
+        }
+
+        .sa-field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .sa-field label {
+            display: block;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .sa-field input,
+        .sa-field select {
+            width: 100%;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .sa-field input:focus,
+        .sa-field select:focus {
+            border-color: var(--accent);
+        }
+
+        .sa-btn {
+            width: 100%;
+            padding: 11px;
+            border: none;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #04150a;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.15s ease;
+        }
+
+        .sa-btn:hover {
+            background: var(--accent-dark);
+            color: white;
+        }
+
+        .sa-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sa-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin: -6px 0 14px;
+        }
+
+        .sa-current-address {
+            font-size: 12px;
+            color: var(--muted);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            margin-bottom: 12px;
+            word-break: break-all;
+        }
+
+        /* =========================
+           TRANSACTIONS TABLE
+        ========================= */
+        .sa-tx-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .sa-tx-table th {
+            text-align: left;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--muted);
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sa-tx-table td {
+            padding: 10px 10px;
+            font-size: 13px;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .sa-status {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sa-status.completed {
+            background: rgba(34, 197, 94, 0.15);
+            color: var(--accent);
+        }
+
+        .sa-status.pending {
+            background: rgba(234, 179, 8, 0.15);
+            color: var(--warn);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =========================
+           TOAST (reuses site pattern)
+        ========================= */
+        .sa-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--panel-2);
+            color: white;
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.25s ease;
+            z-index: 999;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .sa-toast.error {
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+
+        .sa-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 
 <body>
 
-<!-- LOGIN GATE -->
-<div class="admin-container" id="loginGate">
-    <div class="admin-header">
-        <h2>Superadmin Login</h2>
-    </div>
-
-    <div class="card">
-        <input type="password" id="superadminPassword" placeholder="Superadmin password" />
-        <button onclick="superadminLogin()">Login</button>
-    </div>
-</div>
-
-<!-- PANEL (hidden until authenticated) -->
-<div class="admin-container hidden" id="panel">
-
-    <div class="admin-header">
-        <h2>Crypto Save Superadmin</h2>
-        <p>Pick a dummy account, then manage its assets, transactions & deposit address</p>
-    </div>
-
-    <div class="section-title">Select Account</div>
-
-    <div class="card">
-        <select id="userSelect" onchange="loadSelectedUser()">
-            <option value="">-- Choose a user --</option>
-        </select>
-        <p class="small-text" id="selectedUserInfo"></p>
-    </div>
-
-    <!-- ASSETS -->
-    <div class="section-title">Update Assets (adds to current amount)</div>
-
-    <div class="grid">
-        <div class="card">
-            <h3>Bitcoin</h3>
-            <input id="btc" placeholder="BTC amount to add" />
+    <div class="sa-topbar">
+        <div class="sa-brand">
+            <img src="/cryptosave2.png" alt="logo" />
+            <div class="sa-brand-text">
+                <strong>Crypto Save</strong>
+                <span>Superadmin</span>
+            </div>
         </div>
+        <div id="topbarRight"></div>
+    </div>
 
-        <div class="card">
-            <h3>Ethereum</h3>
-            <input id="eth" placeholder="ETH amount to add" />
-        </div>
+    <!-- LOGIN GATE -->
+    <div class="sa-login-wrap" id="loginGate">
+        <div class="sa-login-card">
+            <div class="sa-login-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+                    <path d="M12 2l8 4v6c0 5-3.4 8.7-8 10-4.6-1.3-8-5-8-10V6z" />
+                </svg>
+            </div>
+            <h2>Superadmin Access</h2>
+            <p>Enter the superadmin password to manage user accounts.</p>
 
-        <div class="card">
-            <h3>USDT</h3>
-            <input id="usdt" placeholder="USDT amount to add" />
-        </div>
-
-        <div class="card">
-            <h3>Solana</h3>
-            <input id="sol" placeholder="SOL amount to add" />
+            <input type="password" id="superadminPassword" class="sa-search" placeholder="Password"
+                style="margin-bottom: 14px;" onkeydown="if(event.key==='Enter') superadminLogin()">
+            <button class="sa-btn" id="loginBtn" onclick="superadminLogin()">Unlock Panel</button>
+            <div class="sa-error-text" id="loginError"></div>
         </div>
     </div>
 
-    <button onclick="updateAssets()">Update Assets</button>
+    <!-- MAIN PANEL -->
+    <div class="sa-layout hidden" id="panel">
 
-    <!-- TRANSACTIONS -->
-    <div class="section-title">Add Transaction</div>
+        <!-- SIDEBAR -->
+        <div class="sa-panel">
+            <p class="sa-panel-title">
+                Accounts
+                <span class="count" id="userCount">0</span>
+            </p>
 
-    <div class="card">
-        <input id="date" type="date" />
-        <input id="type" placeholder="Type (Deposit, Interest, Withdrawal)" />
-        <input id="amount" placeholder="Amount" />
+            <input type="text" class="sa-search" id="userSearch" placeholder="Search username..."
+                oninput="renderUserList()">
 
-        <select id="status">
-            <option>Completed</option>
-            <option>Pending</option>
-        </select>
+            <div class="sa-user-list" id="userList">
+                <div class="sa-empty-state">No accounts yet</div>
+            </div>
+        </div>
 
-        <button onclick="addTransaction()">Add Transaction</button>
+        <!-- MAIN CONTENT -->
+        <div class="sa-main">
+
+            <div class="sa-selected-header">
+                <div>
+                    <h3 id="selectedName">No account selected</h3>
+                    <p id="selectedSub">Choose an account from the list to manage it</p>
+                </div>
+            </div>
+
+            <div id="detailSections" class="hidden" style="display:flex; flex-direction:column; gap:18px;">
+
+                <!-- STATS -->
+                <div class="sa-stats-row">
+                    <div class="sa-stat-card">
+                        <div class="label">Bitcoin</div>
+                        <div class="value" id="statBtc">0</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="label">Ethereum</div>
+                        <div class="value" id="statEth">0</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="label">USDT</div>
+                        <div class="value" id="statUsdt">0</div>
+                    </div>
+                    <div class="sa-stat-card">
+                        <div class="label">Solana</div>
+                        <div class="value" id="statSol">0</div>
+                    </div>
+                </div>
+
+                <div class="sa-grid-2">
+
+                    <!-- UPDATE ASSETS -->
+                    <div class="sa-card">
+                        <h4>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="9" />
+                                <path d="M12 7v5l3 3" />
+                            </svg>
+                            Update Assets
+                        </h4>
+                        <p class="sa-hint">Amounts are added to the account's current balance.</p>
+
+                        <div class="sa-field-grid">
+                            <div class="sa-field">
+                                <label>Bitcoin (BTC)</label>
+                                <input id="btc" type="number" step="any" placeholder="0.00" />
+                            </div>
+                            <div class="sa-field">
+                                <label>Ethereum (ETH)</label>
+                                <input id="eth" type="number" step="any" placeholder="0.00" />
+                            </div>
+                            <div class="sa-field">
+                                <label>USDT</label>
+                                <input id="usdt" type="number" step="any" placeholder="0.00" />
+                            </div>
+                            <div class="sa-field">
+                                <label>Solana (SOL)</label>
+                                <input id="sol" type="number" step="any" placeholder="0.00" />
+                            </div>
+                        </div>
+
+                        <button class="sa-btn" onclick="updateAssets()">Apply Update</button>
+                    </div>
+
+                    <!-- DEPOSIT ADDRESS -->
+                    <div class="sa-card">
+                        <h4>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="7" width="18" height="13" rx="2" />
+                                <path d="M3 10h18M8 14h.01" />
+                            </svg>
+                            Deposit Address
+                        </h4>
+
+                        <div class="sa-current-address" id="currentAddress">No address set</div>
+
+                        <div class="sa-field" style="margin-bottom:14px;">
+                            <label>New Address</label>
+                            <input type="text" id="depositAddressInput" placeholder="Enter wallet address" />
+                        </div>
+
+                        <button class="sa-btn" onclick="addDepositAddress()">Save Address</button>
+                    </div>
+
+                </div>
+
+                <!-- ADD TRANSACTION -->
+                <div class="sa-card">
+                    <h4>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16M4 12h16M4 18h10" />
+                        </svg>
+                        Add Transaction
+                    </h4>
+
+                    <div class="sa-field-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="sa-field">
+                            <label>Date</label>
+                            <input id="date" type="date" />
+                        </div>
+                        <div class="sa-field">
+                            <label>Type</label>
+                            <input id="type" placeholder="Deposit / Interest" />
+                        </div>
+                        <div class="sa-field">
+                            <label>Amount</label>
+                            <input id="amount" type="number" step="any" placeholder="0.00" />
+                        </div>
+                        <div class="sa-field">
+                            <label>Status</label>
+                            <select id="status">
+                                <option>Completed</option>
+                                <option>Pending</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="sa-btn" onclick="addTransaction()">Add Transaction</button>
+                </div>
+
+                <!-- TRANSACTIONS LIST -->
+                <div class="sa-card">
+                    <h4>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16v16H4z" />
+                            <path d="M4 9h16" />
+                        </svg>
+                        Recent Transactions
+                    </h4>
+
+                    <div style="overflow-x:auto;">
+                        <table class="sa-tx-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="txTableBody">
+                                <tr>
+                                    <td colspan="4" style="color:#94a3b8;">No transactions</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 
-    <!-- DEPOSIT ADDRESS -->
-    <div class="section-title">Deposit Address</div>
-
-    <div class="card">
-        <input type="text" id="depositAddressInput" placeholder="Enter wallet address" />
-
-        <button onclick="addDepositAddress()">
-            Update Address
-        </button>
-    </div>
-
-</div>
-
-<script src="superadmin.js"></script>
-
+    <script src="superadmin.js"></script>
 </body>
 </html>

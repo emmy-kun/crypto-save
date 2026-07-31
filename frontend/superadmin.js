@@ -1,6 +1,7 @@
 const API = "https://crypto-save-production.up.railway.app";
 
 let selectedUsername = "";
+let allUsers = [];
 
 /* =========================
    AUTH GATE
@@ -14,11 +15,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function superadminLogin() {
     const password = document.getElementById("superadminPassword").value;
+    const errorEl = document.getElementById("loginError");
+    const btn = document.getElementById("loginBtn");
+
+    errorEl.textContent = "";
 
     if (!password) {
-        alert("Enter the superadmin password");
+        errorEl.textContent = "Enter the superadmin password";
         return;
     }
+
+    btn.disabled = true;
+    btn.textContent = "Checking...";
 
     try {
         const res = await fetch(`${API}/superadmin/login`, {
@@ -33,17 +41,32 @@ async function superadminLogin() {
             localStorage.setItem("superadminToken", data.token);
             showPanel();
         } else {
-            alert(data.message || "Invalid password");
+            errorEl.textContent = data.message || "Invalid password";
         }
     } catch (err) {
-        alert("Server error");
+        errorEl.textContent = "Server error, please try again";
     }
+
+    btn.disabled = false;
+    btn.textContent = "Unlock Panel";
 }
 
 function showPanel() {
     document.getElementById("loginGate").classList.add("hidden");
     document.getElementById("panel").classList.remove("hidden");
+
+    const topbarRight = document.getElementById("topbarRight");
+    topbarRight.innerHTML = `
+        <span class="sa-badge">Authenticated</span>
+        <button class="sa-logout-btn" style="margin-left:10px;" onclick="superadminLogout()">Log out</button>
+    `;
+
     loadUsers();
+}
+
+function superadminLogout() {
+    localStorage.removeItem("superadminToken");
+    location.reload();
 }
 
 function authHeaders() {
@@ -56,8 +79,8 @@ function authHeaders() {
 async function handleAuthFailure(res) {
     if (res.status === 401) {
         localStorage.removeItem("superadminToken");
-        alert("Session expired, please log in again");
-        location.reload();
+        showToast("Session expired, please log in again", true);
+        setTimeout(() => location.reload(), 1200);
         return true;
     }
     return false;
@@ -71,29 +94,50 @@ async function loadUsers() {
 
     if (await handleAuthFailure(res)) return;
 
-    const users = await res.json();
-
-    const select = document.getElementById("userSelect");
-    select.innerHTML = '<option value="">-- Choose a user --</option>';
-
-    users.forEach(u => {
-        const option = document.createElement("option");
-        option.value = u.username;
-        option.textContent = u.username;
-        select.appendChild(option);
-    });
+    allUsers = await res.json();
+    document.getElementById("userCount").textContent = allUsers.length;
+    renderUserList();
 }
 
-async function loadSelectedUser() {
-    selectedUsername = document.getElementById("userSelect").value;
-    const info = document.getElementById("selectedUserInfo");
+function renderUserList() {
+    const query = document.getElementById("userSearch").value.trim().toLowerCase();
+    const list = document.getElementById("userList");
 
-    if (!selectedUsername) {
-        info.textContent = "";
+    const filtered = allUsers.filter(u => u.username.toLowerCase().includes(query));
+
+    if (filtered.length === 0) {
+        list.innerHTML = `<div class="sa-empty-state">${allUsers.length === 0 ? "No accounts yet" : "No matches"}</div>`;
         return;
     }
 
-    const res = await fetch(`${API}/superadmin/portfolio/${encodeURIComponent(selectedUsername)}`, {
+    list.innerHTML = "";
+
+    filtered.forEach(u => {
+        const row = document.createElement("div");
+        row.className = "sa-user-row" + (u.username === selectedUsername ? " active" : "");
+        row.onclick = () => selectUser(u.username);
+
+        row.innerHTML = `
+            <div class="sa-avatar">${u.username.charAt(0).toUpperCase()}</div>
+            <div class="sa-user-name">${u.username}</div>
+        `;
+
+        list.appendChild(row);
+    });
+}
+
+/* =========================
+   SELECT USER
+========================= */
+async function selectUser(username) {
+    selectedUsername = username;
+    renderUserList();
+
+    document.getElementById("selectedName").textContent = username;
+    document.getElementById("selectedSub").textContent = "Managing this account's assets, transactions & deposit address";
+    document.getElementById("detailSections").classList.remove("hidden");
+
+    const res = await fetch(`${API}/superadmin/portfolio/${encodeURIComponent(username)}`, {
         headers: authHeaders()
     });
 
@@ -102,10 +146,39 @@ async function loadSelectedUser() {
     const data = await res.json();
     const assets = data.assets || {};
 
-    info.textContent =
-        `Current — BTC: ${assets.bitcoin || 0}, ETH: ${assets.ethereum || 0}, USDT: ${assets.usdt || 0}, SOL: ${assets.solana || 0}, Deposit: ${data.depositAddress || "(none)"}`;
+    document.getElementById("statBtc").textContent = assets.bitcoin || 0;
+    document.getElementById("statEth").textContent = assets.ethereum || 0;
+    document.getElementById("statUsdt").textContent = assets.usdt || 0;
+    document.getElementById("statSol").textContent = assets.solana || 0;
 
-    document.getElementById("depositAddressInput").value = data.depositAddress || "";
+    document.getElementById("currentAddress").textContent = data.depositAddress || "No address set";
+    document.getElementById("depositAddressInput").value = "";
+
+    renderTransactions(data.transactions || []);
+}
+
+function renderTransactions(transactions) {
+    const body = document.getElementById("txTableBody");
+
+    if (!transactions.length) {
+        body.innerHTML = `<tr><td colspan="4" style="color:#94a3b8;">No transactions</td></tr>`;
+        return;
+    }
+
+    body.innerHTML = "";
+
+    [...transactions].reverse().forEach(tx => {
+        const statusClass = tx.status === "Completed" ? "completed" : "pending";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${tx.date || "-"}</td>
+            <td>${tx.type || "-"}</td>
+            <td>$${tx.amount || 0}</td>
+            <td><span class="sa-status ${statusClass}">${tx.status || "-"}</span></td>
+        `;
+        body.appendChild(row);
+    });
 }
 
 /* =========================
@@ -113,7 +186,7 @@ async function loadSelectedUser() {
 ========================= */
 function requireSelectedUser() {
     if (!selectedUsername) {
-        alert("Select a user first");
+        showToast("Select an account first", true);
         return false;
     }
     return true;
@@ -137,8 +210,10 @@ async function updateAssets() {
 
     if (await handleAuthFailure(res)) return;
 
-    alert("Assets updated");
-    loadSelectedUser();
+    ["btc", "eth", "usdt", "sol"].forEach(id => document.getElementById(id).value = "");
+
+    showToast("Assets updated");
+    selectUser(selectedUsername);
 }
 
 async function addTransaction() {
@@ -148,6 +223,11 @@ async function addTransaction() {
     const type = document.getElementById("type").value;
     const amount = Number(document.getElementById("amount").value);
     const status = document.getElementById("status").value;
+
+    if (!date || !type) {
+        showToast("Date and type are required", true);
+        return;
+    }
 
     const res = await fetch(`${API}/superadmin/update/${encodeURIComponent(selectedUsername)}`, {
         method: "POST",
@@ -159,31 +239,50 @@ async function addTransaction() {
 
     if (await handleAuthFailure(res)) return;
 
-    alert("Transaction added");
+    document.getElementById("date").value = "";
+    document.getElementById("type").value = "";
+    document.getElementById("amount").value = "";
+
+    showToast("Transaction added");
+    selectUser(selectedUsername);
 }
 
 async function addDepositAddress() {
     if (!requireSelectedUser()) return;
 
-    const address = document.getElementById("depositAddressInput").value;
+    const address = document.getElementById("depositAddressInput").value.trim();
 
     if (!address) {
-        alert("Enter address");
+        showToast("Enter an address", true);
         return;
     }
 
-    try {
-        const res = await fetch(`${API}/superadmin/deposit-address/${encodeURIComponent(selectedUsername)}`, {
-            method: "PUT",
-            headers: authHeaders(),
-            body: JSON.stringify({ address })
-        });
+    const res = await fetch(`${API}/superadmin/deposit-address/${encodeURIComponent(selectedUsername)}`, {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({ address })
+    });
 
-        if (await handleAuthFailure(res)) return;
+    if (await handleAuthFailure(res)) return;
 
-        const data = await res.json();
-        alert(data.message || "Updated");
-    } catch (err) {
-        alert("Failed to update address");
-    }
+    showToast("Deposit address updated");
+    selectUser(selectedUsername);
+}
+
+/* =========================
+   TOAST
+========================= */
+function showToast(message, isError) {
+    const toast = document.createElement("div");
+    toast.className = "sa-toast" + (isError ? " error" : "");
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add("show"));
+
+    setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+    }, 2200);
 }
