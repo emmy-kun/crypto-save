@@ -27,29 +27,18 @@ async function loadTransactions() {
     txs.forEach(tx => {
         const row = document.createElement("tr");
 
+        const statusClass =
+            tx.status === "Completed" ? "status-complete" : "status-pending";
+
         row.innerHTML = `
             <td>${tx.date}</td>
             <td>${tx.type}</td>
             <td>$${tx.amount}</td>
-            <td>${tx.status}</td>
+            <td><span class="${statusClass}">${tx.status}</span></td>
         `;
 
         table.appendChild(row);
-    });txs.forEach(tx => {
-    const row = document.createElement("tr");
-
-    const statusClass =
-        tx.status === "Completed" ? "status-complete" : "status-pending";
-
-    row.innerHTML = `
-        <td>${tx.date}</td>
-        <td>${tx.type}</td>
-        <td>$${tx.amount}</td>
-        <td><span class="${statusClass}">${tx.status}</span></td>
-    `;
-
-    table.appendChild(row);
-});
+    });
 }
 
 loadTransactions();

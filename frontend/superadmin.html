@@ -119,6 +119,43 @@
             transform: none;
         }
 
+        #topbarRight {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        @media (max-width: 560px) {
+            .sa-topbar {
+                flex-wrap: wrap;
+                gap: 10px;
+                padding: 14px 16px;
+            }
+
+            .sa-brand img {
+                height: 26px;
+            }
+
+            .sa-brand-text strong {
+                font-size: 13px;
+            }
+
+            .sa-brand-text span {
+                font-size: 11px;
+            }
+
+            #topbarRight {
+                width: 100%;
+                justify-content: flex-start;
+            }
+
+            .sa-logout-btn {
+                margin-left: 0 !important;
+            }
+        }
+
         /* =========================
            LOGIN GATE
         ========================= */
@@ -550,7 +587,7 @@
 
     <div class="sa-topbar">
         <div class="sa-brand">
-            <img src="/cryptosave2.png" alt="logo" />
+            <img src="cryptosave2.png" alt="logo" />
             <div class="sa-brand-text">
                 <strong>Crypto Save</strong>
                 <span>Superadmin</span>

@@ -58,7 +58,7 @@ function showPanel() {
     const topbarRight = document.getElementById("topbarRight");
     topbarRight.innerHTML = `
         <span class="sa-badge">Authenticated</span>
-        <button class="sa-logout-btn" style="margin-left:10px;" onclick="superadminLogout()">Log out</button>
+        <button class="sa-logout-btn" onclick="superadminLogout()">Log out</button>
     `;
 
     loadUsers();
