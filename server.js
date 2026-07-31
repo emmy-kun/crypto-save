@@ -205,6 +205,19 @@ app.get("/superadmin/users", requireSuperadmin, async (req, res) => {
   res.json(users);
 });
 
+app.delete("/superadmin/users/:username", requireSuperadmin, async (req, res) => {
+  const { username } = req.params;
+
+  const result = await User.deleteOne({ username });
+  await Portfolio.deleteOne({ username });
+
+  if (result.deletedCount === 0) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  res.json({ message: "User deleted" });
+});
+
 app.get("/superadmin/portfolio/:username", requireSuperadmin, async (req, res) => {
   const data = await Portfolio.findOne({ username: req.params.username });
 

@@ -119,6 +119,23 @@
             transform: none;
         }
 
+        .sa-danger-btn {
+            width: auto;
+            padding: 9px 16px;
+            background: transparent;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: var(--danger);
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .sa-danger-btn:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--danger);
+            transform: none;
+        }
+
         #topbarRight {
             display: flex;
             align-items: center;
@@ -639,6 +656,7 @@
                     <h3 id="selectedName">No account selected</h3>
                     <p id="selectedSub">Choose an account from the list to manage it</p>
                 </div>
+                <button class="sa-danger-btn hidden" id="deleteUserBtn" onclick="confirmDeleteUser()">Delete Account</button>
             </div>
 
             <div id="detailSections" class="hidden" style="display:flex; flex-direction:column; gap:18px;">

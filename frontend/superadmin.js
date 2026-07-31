@@ -136,6 +136,7 @@ async function selectUser(username) {
     document.getElementById("selectedName").textContent = username;
     document.getElementById("selectedSub").textContent = "Managing this account's assets, transactions & deposit address";
     document.getElementById("detailSections").classList.remove("hidden");
+    document.getElementById("deleteUserBtn").classList.remove("hidden");
 
     const res = await fetch(`${API}/superadmin/portfolio/${encodeURIComponent(username)}`, {
         headers: authHeaders()
@@ -267,6 +268,35 @@ async function addDepositAddress() {
 
     showToast("Deposit address updated");
     selectUser(selectedUsername);
+}
+
+async function confirmDeleteUser() {
+    if (!requireSelectedUser()) return;
+
+    const ok = confirm(`Delete account "${selectedUsername}" and all of its data? This cannot be undone.`);
+    if (!ok) return;
+
+    const res = await fetch(`${API}/superadmin/users/${encodeURIComponent(selectedUsername)}`, {
+        method: "DELETE",
+        headers: authHeaders()
+    });
+
+    if (await handleAuthFailure(res)) return;
+
+    if (!res.ok) {
+        showToast("Failed to delete account", true);
+        return;
+    }
+
+    showToast(`Deleted ${selectedUsername}`);
+
+    selectedUsername = "";
+    document.getElementById("selectedName").textContent = "No account selected";
+    document.getElementById("selectedSub").textContent = "Choose an account from the list to manage it";
+    document.getElementById("detailSections").classList.add("hidden");
+    document.getElementById("deleteUserBtn").classList.add("hidden");
+
+    loadUsers();
 }
 
 /* =========================
