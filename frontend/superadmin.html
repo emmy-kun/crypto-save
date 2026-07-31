@@ -489,6 +489,8 @@
         .sa-field select {
             width: 100%;
             min-width: 0;
+            max-width: 100%;
+            box-sizing: border-box;
             padding: 10px 12px;
             border-radius: 10px;
             border: 1px solid var(--border);
@@ -501,6 +503,13 @@
         .sa-field input:focus,
         .sa-field select:focus {
             border-color: var(--accent);
+        }
+
+        /* iOS Safari ignores width:100% on native date inputs unless
+           the default appearance is stripped first */
+        .sa-field input[type="date"] {
+            -webkit-appearance: none;
+            appearance: none;
         }
 
         .sa-btn {
