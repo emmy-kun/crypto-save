@@ -177,6 +177,10 @@ app.get("/api/deposit-address/:username", async (req, res) => {
 const SUPERADMIN_PASSWORD = process.env.SUPERADMIN_PASSWORD || "changeme";
 const superadminTokens = new Set();
 
+// timestamp of the last "force logout everyone" action; clients log
+// themselves out if their login happened before this
+let forceLogoutAt = 0;
+
 function requireSuperadmin(req, res, next) {
   const token = req.headers["x-superadmin-token"];
 
@@ -198,6 +202,26 @@ app.post("/superadmin/login", (req, res) => {
   superadminTokens.add(token);
 
   res.json({ success: true, token });
+});
+
+app.post("/superadmin/force-logout-all", requireSuperadmin, (req, res) => {
+  forceLogoutAt = Date.now();
+  res.json({ success: true, forceLogoutAt });
+});
+
+// Visit this URL (with the correct key) to force a logout without
+// going through the superadmin panel, e.g. as a bookmark.
+app.get("/superadmin/force-logout-all", (req, res) => {
+  if (!process.env.FORCE_LOGOUT_KEY || req.query.key !== process.env.FORCE_LOGOUT_KEY) {
+    return res.status(401).send("Unauthorized");
+  }
+
+  forceLogoutAt = Date.now();
+  res.send("All users have been logged out.");
+});
+
+app.get("/auth/force-logout-status", (req, res) => {
+  res.json({ forceLogoutAt });
 });
 
 app.get("/superadmin/users", requireSuperadmin, async (req, res) => {

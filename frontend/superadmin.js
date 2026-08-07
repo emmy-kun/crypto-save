@@ -58,6 +58,7 @@ function showPanel() {
     const topbarRight = document.getElementById("topbarRight");
     topbarRight.innerHTML = `
         <span class="sa-badge">Authenticated</span>
+        <button class="sa-logout-btn" onclick="forceLogoutAll()">Log everyone out</button>
         <button class="sa-logout-btn" onclick="superadminLogout()">Log out</button>
     `;
 
@@ -67,6 +68,25 @@ function showPanel() {
 function superadminLogout() {
     localStorage.removeItem("superadminToken");
     location.reload();
+}
+
+async function forceLogoutAll() {
+    const ok = confirm("Force every logged-in user to be logged out?");
+    if (!ok) return;
+
+    const res = await fetch(`${API}/superadmin/force-logout-all`, {
+        method: "POST",
+        headers: authHeaders()
+    });
+
+    if (await handleAuthFailure(res)) return;
+
+    if (!res.ok) {
+        showToast("Failed to log everyone out", true);
+        return;
+    }
+
+    showToast("All users have been logged out");
 }
 
 function authHeaders() {

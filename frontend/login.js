@@ -99,6 +99,7 @@ async function verifyCode() {
 
             localStorage.setItem("user", username);
             localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("loginAt", Date.now().toString());
 
             window.location.href = "dashboard.html";
 

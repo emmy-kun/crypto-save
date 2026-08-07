@@ -5,6 +5,25 @@ if (!localStorage.getItem("loggedIn")) {
     window.location.href = "index.html";
 }
 
+async function checkForceLogout() {
+    try {
+        const res = await fetch("https://crypto-save-production.up.railway.app/auth/force-logout-status");
+        const data = await res.json();
+
+        const loginAt = Number(localStorage.getItem("loginAt")) || 0;
+
+        if (data.forceLogoutAt && data.forceLogoutAt > loginAt) {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
+    } catch (err) {
+        console.log("Force logout check failed:", err);
+    }
+}
+
+checkForceLogout();
+setInterval(checkForceLogout, 10000);
+
 document.getElementById("nav-transactions").classList.add("nav-active");
 
 async function loadTransactions() {
