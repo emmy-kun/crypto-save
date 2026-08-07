@@ -21,7 +21,11 @@ async function checkForceLogout() {
         const loginAt = Number(localStorage.getItem("loginAt")) || 0;
 
         if (data.forceLogoutAt && data.forceLogoutAt > loginAt) {
-            localStorage.clear();
+            localStorage.removeItem("user");
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loginAt");
+            localStorage.removeItem("hideBalance");
             window.location.href = "index.html";
         }
     } catch (err) {
@@ -38,12 +42,14 @@ const savedVersion = localStorage.getItem("appVersion");
 if (savedVersion !== APP_VERSION) {
     const user = localStorage.getItem("user");
     const loggedIn = localStorage.getItem("loggedIn");
+    const loginAt = localStorage.getItem("loginAt");
 
     localStorage.clear();
     localStorage.setItem("appVersion", APP_VERSION);
 
     if (user) localStorage.setItem("user", user);
     if (loggedIn) localStorage.setItem("loggedIn", loggedIn);
+    if (loginAt) localStorage.setItem("loginAt", loginAt);
 }
 
 /* =========================

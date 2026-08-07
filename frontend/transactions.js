@@ -13,7 +13,11 @@ async function checkForceLogout() {
         const loginAt = Number(localStorage.getItem("loginAt")) || 0;
 
         if (data.forceLogoutAt && data.forceLogoutAt > loginAt) {
-            localStorage.clear();
+            localStorage.removeItem("user");
+            localStorage.removeItem("loggedIn");
+            localStorage.removeItem("token");
+            localStorage.removeItem("loginAt");
+            localStorage.removeItem("hideBalance");
             window.location.href = "index.html";
         }
     } catch (err) {
